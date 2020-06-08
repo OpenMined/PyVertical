@@ -7,6 +7,8 @@ dependencies:
   - numpy >=1.16
   - pytorch=1.4.0
   - torchvision
-# other
+  - cpuonly  # remove if using GPU
   - black  # for code formatting
   - pip >= 19
+  - pip:
+      - pytest

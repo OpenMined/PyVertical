@@ -39,5 +39,14 @@ Pull requests are welcome.
 For major changes,
 please open an issue first to discuss what you would like to change.
 
+## Testing
+We use [`pytest`][pytest] to test the source code.
+To run the tests:
+1. In the command line, navigate to the root of this repository
+1. Run `python -m pytest`
+
 ## License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
+
+[conda]: https://docs.conda.io/en/latest/
+[pytest]: https://docs.pytest.org/en/latest/contents.html

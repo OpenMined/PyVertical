@@ -1,0 +1,4 @@
+numpy
+pytorch==1.4.0
+torchvision
+syft[udacity]

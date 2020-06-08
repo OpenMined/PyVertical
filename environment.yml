@@ -1,0 +1,14 @@
+name: pyvertical-dev
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.7.*
+  - numpy >=1.16
+  - pytorch=1.4.0
+  - torchvision
+  - cpuonly  # remove if using GPU
+  - black  # for code formatting
+  - pip >= 19
+  - pip:
+      - pytest

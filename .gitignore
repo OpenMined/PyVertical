@@ -141,3 +141,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/<Paste>
+
+
+## Project-specific stuff
+MNIST/

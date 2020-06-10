@@ -4,11 +4,15 @@ Handling vertically partitioned data
 from copy import deepcopy
 from typing import Tuple, TypeVar
 
+import numpy as np
+
 
 Dataset = TypeVar("Dataset")
 
 
-def partition_dataset(dataset: Dataset) -> Tuple[Dataset, Dataset]:
+def partition_dataset(
+    dataset: Dataset, keep_order: bool = False
+) -> Tuple[Dataset, Dataset]:
     """
     Vertically partition a torch dataset in two
 
@@ -21,6 +25,8 @@ def partition_dataset(dataset: Dataset) -> Tuple[Dataset, Dataset]:
     ----------
     dataset : torch.utils.data.Dataset
         The dataset to split. Must be a dataset of images
+    keep_order : bool (default = False)
+        If False, shuffle the elements of each dataset
 
     Returns
     -------
@@ -46,5 +52,20 @@ def partition_dataset(dataset: Dataset) -> Tuple[Dataset, Dataset]:
 
     partition1.data = partition1.data[:, :half_height]
     partition2.data = partition2.data[:, half_height:]
+
+    if not keep_order:
+        # Shuffle dataset 1
+        idxs1 = np.arange(len(partition1))
+        np.random.shuffle(idxs1)
+
+        partition1.data = partition1.data[idxs1]
+        partition1.targets = partition1.targets[idxs1]
+
+        # Shuffle dataset 2
+        idxs2 = np.arange(len(partition2))
+        np.random.shuffle(idxs2)
+
+        partition2.data = partition2.data[idxs2]
+        partition2.targets = partition2.targets[idxs2]
 
     return partition1, partition2

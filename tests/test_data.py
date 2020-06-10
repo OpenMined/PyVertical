@@ -123,3 +123,32 @@ class TestPartition:
         )
 
         assert dataset1_data_size + dataset2_data_size == original_dataset_data_size
+
+    def test_that_unique_ids_remain_attached_to_correct_data(self):
+        """
+        Check that IDs are not sorted differently to data/labels and are removed
+        if the data is
+        """
+        dataset1, dataset2 = partition_dataset(self.dataset)
+
+        # Check same number of data, targets, ids have been removed
+        assert dataset1.data.size(0) == dataset1.targets.size(0) == len(dataset1.ids)
+        assert dataset2.data.size(0) == dataset2.targets.size(0) == len(dataset2.ids)
+
+        # Check that IDs are unique
+        _, id1_counts = np.unique(dataset1.ids, return_counts=True)
+        assert np.max(id1_counts) == 1
+
+        _, id2_counts = np.unique(dataset2.ids, return_counts=True)
+        assert np.max(id2_counts) == 1
+
+        # Check that IDs still align with data and labels
+        # Check first 100 only to save time
+        for i in range(100):
+            _, label = dataset1[i]
+            id = dataset1.ids[i]
+
+            id_original_index = np.where(dataset2.ids == id)[0]
+            if id_original_index.size:
+                # ID is in dataset2 as well, so we can compare labels
+                assert dataset2.targets[id_original_index[0]] == label

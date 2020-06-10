@@ -45,17 +45,26 @@ def partition_dataset(
     partition1 = deepcopy(dataset)
     partition2 = deepcopy(dataset)
 
+    # Re-index data
+    idxs1 = np.arange(len(partition1))
+    idxs2 = np.arange(len(partition2))
+
     # Remove random subsets of data with 1% prob
     if remove_data:
-        remove_idxs1 = np.random.uniform(0, 1, len(partition1)) > 0.01
-        partition1.data = partition1.data[remove_idxs1]
-        partition1.targets = partition1.targets[remove_idxs1]
+        idxs1 = np.random.uniform(0, 1, len(partition1)) > 0.01
+        idxs2 = np.random.uniform(0, 1, len(partition2)) > 0.01
 
-        # Different subsets for each dataset partition
-        remove_idxs2 = np.random.uniform(0, 1, len(partition2)) > 0.01
-        partition2.data = partition2.data[remove_idxs2]
-        partition2.targets = partition2.targets[remove_idxs2]
+    if not keep_order:
+        np.random.shuffle(idxs1)
+        np.random.shuffle(idxs2)
 
+    partition1.data = partition1.data[idxs1]
+    partition1.targets = partition1.targets[idxs1]
+
+    partition2.data = partition2.data[idxs2]
+    partition2.targets = partition2.targets[idxs2]
+
+    # Partition data
     data_shape = partition1.data.size()
 
     # Assume we're working with images at the moment
@@ -65,20 +74,5 @@ def partition_dataset(
 
     partition1.data = partition1.data[:, :half_height]
     partition2.data = partition2.data[:, half_height:]
-
-    if not keep_order:
-        # Shuffle dataset 1
-        idxs1 = np.arange(len(partition1))
-        np.random.shuffle(idxs1)
-
-        partition1.data = partition1.data[idxs1]
-        partition1.targets = partition1.targets[idxs1]
-
-        # Shuffle dataset 2
-        idxs2 = np.arange(len(partition2))
-        np.random.shuffle(idxs2)
-
-        partition2.data = partition2.data[idxs2]
-        partition2.targets = partition2.targets[idxs2]
 
     return partition1, partition2

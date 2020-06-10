@@ -23,7 +23,9 @@ class TestPartition:
         rmtree("MNIST")
 
     def test_partition_dataset_returns_disjoint_parts_of_data(self):
-        dataset1, dataset2 = partition_dataset(self.dataset, keep_order=True)
+        dataset1, dataset2 = partition_dataset(
+            self.dataset, keep_order=True, remove_data=False
+        )
 
         # Test that we've not lost any data
         assert (
@@ -45,7 +47,7 @@ class TestPartition:
 
     def test_partition_jumbles_data(self):
         dataset1, dataset2 = partition_dataset(
-            self.dataset
+            self.dataset, remove_data=False,
         )  # keep_order = False by default
 
         # Test that we've not lost any data
@@ -76,7 +78,7 @@ class TestPartition:
 
         half_data_size = int(dataset.data.shape[1] / 2)
 
-        dataset1, dataset2 = partition_dataset(dataset)
+        dataset1, dataset2 = partition_dataset(dataset, remove_data=False)
 
         for i in range(3):
             datum1, label1 = dataset1[i]
@@ -96,3 +98,28 @@ class TestPartition:
                 datum2.detach().numpy(),
                 datum2_original.detach().numpy()[:, half_data_size:],
             )
+
+    def test_that_partition_removes_data(self):
+        """
+        Default behaviour of partition_dataset should be to remove data
+        """
+        dataset1, dataset2 = partition_dataset(self.dataset)
+
+        # Original dataset had 60_000 data points
+        # with 1% prob of removal (drawn from uniform dist.) we should expect
+        # between 59_200 and 59_600 data points greater than >99.99% of the time
+        assert 59_200 <= len(dataset1) <= 59_600
+        assert 59_200 <= len(dataset2) <= 59_600
+
+        # Check same number of data and targets have been removed
+        assert dataset1.data.size(0) == dataset1.targets.size(0)
+        assert dataset2.data.size(0) == dataset2.targets.size(0)
+
+        # Check that we haven't lost data in other dimensions
+        dataset1_data_size = dataset1.data.size(1) * dataset1.data.size(2)
+        dataset2_data_size = dataset2.data.size(1) * dataset2.data.size(2)
+        original_dataset_data_size = self.dataset.data.size(1) * self.dataset.data.size(
+            2
+        )
+
+        assert dataset1_data_size + dataset2_data_size == original_dataset_data_size

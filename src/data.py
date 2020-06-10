@@ -11,7 +11,7 @@ Dataset = TypeVar("Dataset")
 
 
 def partition_dataset(
-    dataset: Dataset, keep_order: bool = False
+    dataset: Dataset, keep_order: bool = False, remove_data: bool = True,
 ) -> Tuple[Dataset, Dataset]:
     """
     Vertically partition a torch dataset in two
@@ -27,6 +27,8 @@ def partition_dataset(
         The dataset to split. Must be a dataset of images
     keep_order : bool (default = False)
         If False, shuffle the elements of each dataset
+    remove_data : bool (default = True)
+        If True, remove datapoints with probability 0.01
 
     Returns
     -------
@@ -42,6 +44,17 @@ def partition_dataset(
     """
     partition1 = deepcopy(dataset)
     partition2 = deepcopy(dataset)
+
+    # Remove random subsets of data with 1% prob
+    if remove_data:
+        remove_idxs1 = np.random.uniform(0, 1, len(partition1)) > 0.01
+        partition1.data = partition1.data[remove_idxs1]
+        partition1.targets = partition1.targets[remove_idxs1]
+
+        # Different subsets for each dataset partition
+        remove_idxs2 = np.random.uniform(0, 1, len(partition2)) > 0.01
+        partition2.data = partition2.data[remove_idxs2]
+        partition2.targets = partition2.targets[remove_idxs2]
 
     data_shape = partition1.data.size()
 

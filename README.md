@@ -35,6 +35,21 @@ N.b. Installing the dependencies takes several steps to circumvent versioning in
 In the future,
 all packages will be moved into the `environment.yml`.
 
+## Usage
+To create a vertically partitioned dataset:
+```python
+from torchvision.datasets import MNIST
+from src.dataset import add_ids, partition_dataset
+
+data = add_ids(MNIST)(".", download=True)  # add_ids adds unique IDs to data points
+
+# Split data
+data_partition1, data_partition2 = partition_dataset(data)
+
+# Call data
+datum, label, unique_id = data_partition1[10]
+```
+
 ## Contributing
 Pull requests are welcome.
 For major changes,

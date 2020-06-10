@@ -2,25 +2,50 @@
 Test code in src/data.py
 """
 from copy import deepcopy
-from itertools import chain
 from shutil import rmtree
+import uuid
 
 import numpy as np
 import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
-from src.data import partition_dataset
+from src.data import add_ids, partition_dataset
+
+
+class TestVerticalDataset:
+    @classmethod
+    def setup_class(cls):
+        cls.dataset = add_ids(MNIST)(
+            "./TestVerticalDataset", download=True, transform=transforms.ToTensor()
+        )
+
+    @classmethod
+    def teardown_class(cls):
+        rmtree("./TestVerticalDataset")
+
+    def test_that_ids_are_unique(self):
+        assert np.unique(self.dataset.ids).size == len(self.dataset)
+
+    def test_that_getitem_returns_id(self):
+        results = self.dataset[5]
+
+        assert len(results) == 3
+        assert isinstance(results[0], torch.Tensor)  # transform should be retained
+
+        assert isinstance(results[2], uuid.UUID)
 
 
 class TestPartition:
     @classmethod
     def setup_class(cls):
-        cls.dataset = MNIST(".", download=True, transform=transforms.ToTensor())
+        cls.dataset = add_ids(MNIST)(
+            "./TestPartition", download=True, transform=transforms.ToTensor()
+        )
 
     @classmethod
     def teardown_class(cls):
-        rmtree("MNIST")
+        rmtree("./TestPartition")
 
     def test_partition_dataset_returns_disjoint_parts_of_data(self):
         dataset1, dataset2 = partition_dataset(
@@ -81,23 +106,25 @@ class TestPartition:
         dataset1, dataset2 = partition_dataset(dataset, remove_data=False)
 
         for i in range(3):
-            datum1, label1 = dataset1[i]
+            datum1, label1, id1 = dataset1[i]
             datum1_original_idx = np.argmax(dataset.targets == label1)
-            datum1_original, _ = dataset[datum1_original_idx]
+            datum1_original, _, id1_original = dataset[datum1_original_idx]
 
             np.testing.assert_array_equal(
                 datum1.detach().numpy(),
                 datum1_original.detach().numpy()[:, :half_data_size],
             )
+            assert id1_original == id1
 
-            datum2, label2 = dataset2[i]
+            datum2, label2, id2 = dataset2[i]
             datum2_original_idx = np.argmax(dataset.targets == label2)
-            datum2_original, _ = dataset[datum2_original_idx]
+            datum2_original, _, id2_original = dataset[datum2_original_idx]
 
             np.testing.assert_array_equal(
                 datum2.detach().numpy(),
                 datum2_original.detach().numpy()[:, half_data_size:],
             )
+            assert id2_original == id2
 
     def test_that_partition_removes_data(self):
         """
@@ -145,8 +172,7 @@ class TestPartition:
         # Check that IDs still align with data and labels
         # Check first 100 only to save time
         for i in range(100):
-            _, label = dataset1[i]
-            id = dataset1.ids[i]
+            _, label, id = dataset1[i]
 
             id_original_index = np.where(dataset2.ids == id)[0]
             if id_original_index.size:

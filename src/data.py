@@ -11,6 +11,20 @@ import numpy as np
 Dataset = TypeVar("Dataset")
 
 
+def add_ids(cls):
+    class VerticalDataset(cls):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.ids = np.array([uuid4() for _ in range(len(self))])
+
+        def __getitem__(self, item):
+            data, target = super().__getitem__(item)
+            return data, target, self.ids[item]
+
+    return VerticalDataset
+
+
 def partition_dataset(
     dataset: Dataset, keep_order: bool = False, remove_data: bool = True,
 ) -> Tuple[Dataset, Dataset]:
@@ -22,7 +36,7 @@ def partition_dataset(
     The two parts of the split dataset are the top half and bottom half of an image.
 
     Args:
-        dataset (torch.utils.data.Dataset) : The dataset to split. Must be a dataset of images
+        dataset (torch.utils.data.Dataset) : The dataset to split. Must be a dataset of images, containing ids
         keep_order (bool, default = False) : If False, shuffle the elements of each dataset
         remove_data (bool, default = True) : If True, remove datapoints with probability 0.01
 
@@ -31,11 +45,12 @@ def partition_dataset(
         torch.utils.data.Dataset : Dataset containing the second partition: the bottom half of the images
 
     Raises:
+        RuntimeError : If dataset does not have an 'ids' attribute
         AssertionError : If the size of the provided dataset
             does not have three elements (i.e. is not an image dataset)
     """
-    # Give datapoints unique IDs
-    dataset.ids = np.array([uuid4() for _ in range(len(dataset))])
+    if not hasattr(dataset, "ids"):
+        raise RuntimeError("Dataset does not have attribute 'ids'")
 
     partition1 = deepcopy(dataset)
     partition2 = deepcopy(dataset)
@@ -55,9 +70,11 @@ def partition_dataset(
 
     partition1.data = partition1.data[idxs1]
     partition1.targets = partition1.targets[idxs1]
+    partition1.ids = partition1.ids[idxs1]
 
     partition2.data = partition2.data[idxs2]
     partition2.targets = partition2.targets[idxs2]
+    partition2.ids = partition2.ids[idxs2]
 
     # Partition data
     data_shape = partition1.data.size()

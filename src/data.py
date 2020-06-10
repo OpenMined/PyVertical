@@ -3,6 +3,7 @@ Handling vertically partitioned data
 """
 from copy import deepcopy
 from typing import Tuple, TypeVar
+from uuid import uuid4
 
 import numpy as np
 
@@ -33,6 +34,9 @@ def partition_dataset(
         AssertionError : If the size of the provided dataset
             does not have three elements (i.e. is not an image dataset)
     """
+    # Give datapoints unique IDs
+    dataset.ids = np.array([uuid4() for _ in range(len(dataset))])
+
     partition1 = deepcopy(dataset)
     partition2 = deepcopy(dataset)
 

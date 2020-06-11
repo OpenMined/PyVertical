@@ -10,6 +10,7 @@ import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
+from src.dataloader import VerticalDataLoader
 from src.dataset import add_ids, partition_dataset
 
 
@@ -34,6 +35,18 @@ class TestVerticalDataset:
         assert isinstance(results[0], torch.Tensor)  # transform should be retained
 
         assert isinstance(results[2], uuid.UUID)
+
+    def test_vertical_dataset_can_be_used_in_dataloader(self):
+        dataloader = VerticalDataLoader(self.dataset, batch_size=100)
+
+        for results in dataloader:
+            assert len(results) == 3
+            assert len(results[2]) == 100
+
+            # ID objects should be converted to str
+            assert isinstance(results[2][0], str)
+
+            break
 
 
 class TestPartition:

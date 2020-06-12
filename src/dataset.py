@@ -21,6 +21,7 @@ def add_ids(cls):
         VerticalDataset : A class which wraps cls to add unique IDs as an attribute,
             and returns data, target, id when __getitem__ is called
     """
+
     class VerticalDataset(cls):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)

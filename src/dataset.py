@@ -6,6 +6,7 @@ from typing import Tuple, TypeVar
 from uuid import uuid4
 
 import numpy as np
+from PIL import Image
 
 
 Dataset = TypeVar("Dataset")
@@ -28,9 +29,34 @@ def add_ids(cls):
 
             self.ids = np.array([uuid4() for _ in range(len(self))])
 
-        def __getitem__(self, item):
-            data, target = super().__getitem__(item)
-            return data, target, self.ids[item]
+        def __getitem__(self, index):
+            if self.data is None:
+                img = None
+            else:
+                img = self.data[index]
+                img = Image.fromarray(img.numpy(), mode="L")
+
+                if self.transform is not None:
+                    img = self.transform(img)
+
+            if self.targets is None:
+                target = None
+            else:
+                target = int(self.targets[index]) if self.targets is not None else None
+
+                if self.target_transform is not None:
+                    target = self.target_transform(target)
+
+            id = self.ids[index]
+
+            # Return a tuple of non-None elements
+            return (*filter(lambda x: x is not None, (img, target, id)),)
+
+        def __len__(self):
+            if self.data is not None:
+                return self.data.size(0)
+            else:
+                return len(self.targets)
 
     return VerticalDataset
 
@@ -43,7 +69,7 @@ def partition_dataset(
     A vertical partition is when parameters for a single data point is
     split across multiple data holders.
     This function assumes the dataset to split contains images (e.g. MNIST).
-    The two parts of the split dataset are the top half and bottom half of an image.
+    One dataset gets the images, the other gets the labels
 
     Args:
         dataset (torch.utils.data.Dataset) : The dataset to split. Must be a dataset of images, containing ids
@@ -51,8 +77,8 @@ def partition_dataset(
         remove_data (bool, default = True) : If True, remove datapoints with probability 0.01
 
     Returns:
-        torch.utils.data.Dataset : Dataset containing the first partition: the top half of the images
-        torch.utils.data.Dataset : Dataset containing the second partition: the bottom half of the images
+        torch.utils.data.Dataset : Dataset containing the first partition: the data/images
+        torch.utils.data.Dataset : Dataset containing the second partition: the labels
 
     Raises:
         RuntimeError : If dataset does not have an 'ids' attribute
@@ -64,6 +90,10 @@ def partition_dataset(
 
     partition1 = deepcopy(dataset)
     partition2 = deepcopy(dataset)
+
+    # Partition data
+    partition1.targets = None
+    partition2.data = None
 
     # Re-index data
     idxs1 = np.arange(len(partition1))
@@ -79,22 +109,9 @@ def partition_dataset(
         np.random.shuffle(idxs2)
 
     partition1.data = partition1.data[idxs1]
-    partition1.targets = partition1.targets[idxs1]
     partition1.ids = partition1.ids[idxs1]
 
-    partition2.data = partition2.data[idxs2]
     partition2.targets = partition2.targets[idxs2]
     partition2.ids = partition2.ids[idxs2]
-
-    # Partition data
-    data_shape = partition1.data.size()
-
-    # Assume we're working with images at the moment
-    assert len(data_shape) == 3
-
-    half_height = int(data_shape[1] / 2)
-
-    partition1.data = partition1.data[:, :half_height]
-    partition2.data = partition2.data[:, half_height:]
 
     return partition1, partition2

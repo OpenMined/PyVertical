@@ -1,5 +1,5 @@
 """
-Test code in src/data.py
+Test code in src/dataset.py
 """
 from copy import deepcopy
 from shutil import rmtree
@@ -10,43 +10,7 @@ import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
-from src.dataloader import VerticalDataLoader
 from src.dataset import add_ids, partition_dataset
-
-
-class xTestVerticalDataset:
-    @classmethod
-    def setup_class(cls):
-        cls.dataset = add_ids(MNIST)(
-            "./TestVerticalDataset", download=True, transform=transforms.ToTensor()
-        )
-
-    @classmethod
-    def teardown_class(cls):
-        rmtree("./TestVerticalDataset")
-
-    def test_that_ids_are_unique(self):
-        assert np.unique(self.dataset.ids).size == len(self.dataset)
-
-    def test_that_getitem_returns_id(self):
-        results = self.dataset[5]
-
-        assert len(results) == 3
-        assert isinstance(results[0], torch.Tensor)  # transform should be retained
-
-        assert isinstance(results[2], uuid.UUID)
-
-    def test_vertical_dataset_can_be_used_in_dataloader(self):
-        dataloader = VerticalDataLoader(self.dataset, batch_size=100)
-
-        for results in dataloader:
-            assert len(results) == 3
-            assert len(results[2]) == 100
-
-            # ID objects should be converted to str
-            assert isinstance(results[2][0], str)
-
-            break
 
 
 class TestPartition:

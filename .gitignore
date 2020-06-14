@@ -145,3 +145,5 @@ cython_debug/<Paste>
 
 ## Project-specific stuff
 MNIST/
+images/*
+!images/diagram_white_background.png

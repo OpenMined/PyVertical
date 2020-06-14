@@ -15,12 +15,30 @@ A project developing Privacy Preserving Vertically Distributed Learning.
         using SplitNNs,
         so only data holders can access data
 
+
+![PyVertical diagram](./images/diagram_white_background.png)
+
+PyVertical process:
+1. Create partitioned dataset
+    - Simulate real-world partitioned dataset by splitting MNIST into a dataset of images and a dataset of labels
+    - Give each data point (image + label) a unique ID
+    - Randomly shuffle each dataset
+    - Randomly remove some elements from each dataset
+1. Link datasets using PSI
+    - Use **PSI** to link indices in each dataset using unique IDs
+    - Reorder datasets using linked indices
+1. Train a split neural network
+    - Hold both datasets in a dataloader
+    - Send images to first part of split network
+    - Send labels to second part of split network
+    - Train the network
+
 ## Requirements
 This project is written in Python.
 The work is displayed in jupyter notebooks.
 
 To install the dependencies,
-we recommend using Conda:
+we recommend using [Conda]:
 1. Clone this repository
 1. In the command line, navigate to your local copy of the repository
 1. Run `conda env create -f environment.yml`

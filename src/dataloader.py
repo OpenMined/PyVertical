@@ -35,7 +35,27 @@ def id_collate_fn(batch: Tuple) -> List:
 
 
 class VerticalDataLoader(DataLoader):
+    """DataLoader for a single vertically-partitioned dataset
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.collate_fn = id_collate_fn
+
+
+class PartitionDistributingDataLoader:
+    """Dataloader which batches data from a complete
+    set of vertically-partitioned datasets
+    i.e. the images dataset AND the labels dataset
+    """
+
+    def __init__(self, dataset1, dataset2, *args, **kwargs):
+        assert dataset1.targets is None
+        assert dataset2.data is None
+
+        self.dataloader1 = VerticalDataLoader(dataset1, *args, **kwargs)
+        self.dataloader2 = VerticalDataLoader(dataset2, *args, **kwargs)
+
+    def __iter__(self):
+        return zip(self.dataloader1, self.dataloader2)

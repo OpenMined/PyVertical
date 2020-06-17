@@ -84,7 +84,7 @@ models = [
     nn.Sequential(nn.Linear(hidden_sizes[0], output_size), nn.LogSoftmax(dim=1)),
 ]
 
-# Send Model Segments to model locations
-model_locations = [worker1, worker2]
-for model, location in zip(models, model_locations):
-    model.send(location)
+# # Send Model Segments to model locations
+# model_locations = [worker1, worker2]
+# for model, location in zip(models, model_locations):
+#     model.send(location)

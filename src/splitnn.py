@@ -7,6 +7,13 @@ Worker 2 has a segment of the model and the Labels
 """
 
 
+import torch
+from torch import nn
+import syft as sy
+
+hook = sy.TorchHook(torch)
+
+
 class SplitNN:
     def __init__(self, models, optimizers):
         self.models = models
@@ -61,14 +68,6 @@ class SplitNN:
     def step(self):
         for opt in optimizers:
             opt.step()
-
-
-import torch
-from torchvision import datasets, transforms
-from torch import nn, optim
-import syft as sy
-
-hook = sy.TorchHook(torch)
 
 
 torch.manual_seed(0)

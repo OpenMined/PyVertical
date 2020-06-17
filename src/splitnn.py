@@ -1,9 +1,9 @@
 """
 Vertically partitioned SplitNN implementation
 
-Alice worker has two segments of the model and the Images
+Worker 1 has two segments of the model and the Images
 
-Bob worker has a segment of the model and the Labels
+Worker 2 has a segment of the model and the Labels
 """
 
 
@@ -19,44 +19,44 @@ class SplitNN:
         self.optimizers = optimizers
         
     def forward(self, x):
-        a = []
-        remote_a = []
+        grads = []
+        remote_grads = []
         
-        a.append(models[0](x))
-        if a[-1].location == models[1].location:
-            remote_a.append(a[-1].detach().requires_grad_())
+        grads.append(models[0](x))
+        if grads[-1].location == models[1].location:
+            remote_grads.append(grads[-1].detach().requires_grad_())
         else:
-            remote_a.append(a[-1].detach().move(models[1].location).requires_grad_())
+            remote_grads.append(grads[-1].detach().move(models[1].location).requires_grad_())
 
         i=1    
         while i < (len(models)-1):
             
-            a.append(models[i](remote_a[-1]))
-            if a[-1].location == models[i+1].location:
-                remote_a.append(a[-1].detach().requires_grad_())
+            grads.append(models[i](remote_grads[-1]))
+            if grads[-1].location == models[i+1].location:
+                remote_grads.append(grads[-1].detach().requires_grad_())
             else:
-                remote_a.append(a[-1].detach().move(models[i+1].location).requires_grad_())
+                remote_grads.append(grads[-1].detach().move(models[i+1].location).requires_grad_())
             
             i+=1
         
-        a.append(models[i](remote_a[-1]))
-        self.a = a
-        self.remote_a = remote_a
+        grads.append(models[i](remote_a[-1]))
+        self.grads = grads
+        self.remote_grads = remote_grads
         
-        return a[-1]
+        return grads[-1]
     
     def backward(self):
-        a=self.a
-        remote_a=self.remote_a
+        grads=self.grads
+        remote_grads=self.remote_grads
         optimizers = self.optimizers
         
         i= len(models)-2   
         while i > -1:
-            if remote_a[i].location == a[i].location:
-                grad_a = remote_a[i].grad.copy()
+            if remote_grads[i].location == grads[i].location:
+                grad_grads = remote_grads[i].grad.copy()
             else:
-                grad_a = remote_a[i].grad.copy().move(a[i].location)
-            a[i].backward(grad_a)
+                grad_grads = remote_grads[i].grad.copy().move(grads[i].location)
+            grads[i].backward(grad_grads)
             i-=1
 
     
@@ -82,29 +82,14 @@ models = [
                 nn.ReLU(),
     ),
     nn.Sequential(
-                nn.Linear(hidden_sizes[0], hidden_sizes[1]),
-                nn.ReLU(),
-    ),
-    nn.Sequential(
-                nn.Linear(hidden_sizes[1], output_size),
+                nn.Linear(hidden_sizes[0], output_size),
                 nn.LogSoftmax(dim=1)
     )
 ]
 
-# Create optimisers for each segment and link to them
-optimizers = [
-    optim.SGD(model.parameters(), lr=0.03,)
-    for model in models
-]
-
-# create some workers
-alice = sy.VirtualWorker(hook, id="alice")
-bob = sy.VirtualWorker(hook, id="bob")
-
 # Send Model Segments to model locations
-model_locations = [alice, alice, bob]
+model_locations = [worker1, worker2]
 for model, location in zip(models, model_locations):
     model.send(location)
 
-#Instantiate a SpliNN class with our distributed segments and their respective optimizers
-splitNN = SplitNN(models, optimizers)
+

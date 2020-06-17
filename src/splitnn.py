@@ -39,7 +39,7 @@ class SplitNN:
             
             i+=1
         
-        grads.append(models[i](remote_a[-1]))
+        grads.append(models[i](remote_grads[-1]))
         self.grads = grads
         self.remote_grads = remote_grads
         

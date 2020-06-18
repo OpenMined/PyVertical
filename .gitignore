@@ -4,6 +4,9 @@
 
 */lightning_logs/
 
+# Bazel
+bazel-*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -19,58 +19,63 @@ class SplitNN:
         self.models = models
         self.optimizers = optimizers
 
-    def forward(self, x):
-        grads = []
-        remote_grads = []
+        self.data = []
+        self.remote_tensors = []
 
-        grads.append(models[0](x))
-        if grads[-1].location == models[1].location:
-            remote_grads.append(grads[-1].detach().requires_grad_())
+    def forward(self, x):
+        data = []
+        remote_tensors = []
+
+        data.append(models[0](x))
+
+        if data[-1].location == models[1].location:
+            remote_tensors.append(data[-1].detach().requires_grad_())
         else:
-            remote_grads.append(
-                grads[-1].detach().move(models[1].location).requires_grad_()
+            remote_tensors.append(
+                data[-1].detach().move(models[1].location).requires_grad_()
             )
+
         i = 1
         while i < (len(models) - 1):
+            data.append(models[i](remote_tensors[-1]))
 
-            grads.append(models[i](remote_grads[-1]))
-            if grads[-1].location == models[i + 1].location:
-                remote_grads.append(grads[-1].detach().requires_grad_())
+            if data[-1].location == models[i + 1].location:
+                remote_tensors.append(data[-1].detach().requires_grad_())
             else:
-                remote_grads.append(
-                    grads[-1].detach().move(models[i + 1].location).requires_grad_()
+                remote_tensors.append(
+                    data[-1].detach().move(models[i + 1].location).requires_grad_()
                 )
-            i += 1
-        grads.append(models[i](remote_grads[-1]))
-        self.grads = grads
-        self.remote_grads = remote_grads
 
-        return grads[-1]
+            i += 1
+
+        data.append(models[i](remote_tensors[-1]))
+
+        self.data = data
+        self.remote_tensors = remote_tensors
+
+        return data[-1]
 
     def backward(self):
-        grads = self.grads
-        remote_grads = self.remote_grads
-        optimizers = self.optimizers
+        data = self.data
+        remote_tensors = self.remote_tensors
 
         i = len(models) - 2
         while i > -1:
-            if remote_grads[i].location == grads[i].location:
-                grad_grads = remote_grads[i].grad.copy()
+            if remote_tensors[i].location == data[i].location:
+                grads = remote_tensors[i].grad.copy()
             else:
-                grad_grads = remote_grads[i].grad.copy().move(grads[i].location)
-            grads[i].backward(grad_grads)
+                grads = remote_tensors[i].grad.copy().move(data[i].location)
+
+            data[i].backward(grads)
             i -= 1
 
     def zero_grads(self):
-        for opt in optimizers:
+        for opt in self.optimizers:
             opt.zero_grad()
 
     def step(self):
-        for opt in optimizers:
+        for opt in self.optimizers:
             opt.step()
-
-
-torch.manual_seed(0)
 
 
 # Define our model segments
@@ -80,8 +85,13 @@ hidden_sizes = [128, 640]
 output_size = 10
 
 models = [
-    nn.Sequential(nn.Linear(input_size, hidden_sizes[0]), nn.ReLU(),),
-    nn.Sequential(nn.Linear(hidden_sizes[0], output_size), nn.LogSoftmax(dim=1)),
+    nn.Sequential(
+        nn.Linear(input_size, hidden_sizes[0]),
+        nn.ReLU(),
+        nn.Linear(hidden_sizes[0], hidden_sizes[1]),
+        nn.ReLU(),
+    ),
+    nn.Sequential(nn.Linear(hidden_sizes[1], output_size), nn.LogSoftmax(dim=1)),
 ]
 
 # # Send Model Segments to model locations

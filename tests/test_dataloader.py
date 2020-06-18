@@ -4,6 +4,7 @@ Test code in src/dataloader.py
 from shutil import rmtree
 
 import pytest
+import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
@@ -90,3 +91,17 @@ class TestPartitionDistributingDataLoader:
             dataloader = PartitionDistributingDataLoader(
                 self.dataset1, self.dataset1, batch_size=100
             )
+
+    def test_drop_non_intersecting(self):
+        dataloader = PartitionDistributingDataLoader(
+            self.dataset1, self.dataset2, batch_size=100
+        )
+        sample_datapoint = dataloader.dataloader1.dataset.data[0]
+        intersection = [0, 1, 2]
+
+        dataloader.drop_non_intersecting(intersection)
+
+        assert 3 == len(dataloader.dataloader1.dataset.data)
+        assert 3 == len(dataloader.dataloader1.dataset.ids)
+        assert 3 == len(dataloader.dataloader2.dataset.ids)
+        assert torch.equal(sample_datapoint, dataloader.dataloader1.dataset.data[0])

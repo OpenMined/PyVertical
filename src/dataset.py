@@ -2,7 +2,7 @@
 Handling vertically partitioned data
 """
 from copy import deepcopy
-from typing import Tuple, TypeVar
+from typing import List, Tuple, TypeVar
 from uuid import uuid4
 
 import numpy as np
@@ -57,6 +57,10 @@ def add_ids(cls):
                 return self.data.size(0)
             else:
                 return len(self.targets)
+
+        def get_ids(self) -> List[str]:
+            """Return a list of the ids of this dataset."""
+            return [str(id_) for id_ in self.ids]
 
     return VerticalDataset
 

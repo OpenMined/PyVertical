@@ -59,3 +59,10 @@ class PartitionDistributingDataLoader:
 
     def __iter__(self):
         return zip(self.dataloader1, self.dataloader2)
+
+    def drop_non_intersecting(self, intersection):
+        """Remove elements and ids in the datasets that are not in the intersection."""
+        self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection]
+        self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection]
+
+        self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection]

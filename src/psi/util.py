@@ -12,9 +12,11 @@ def compute_psi(client_items, server_items, fpr=1e-9):
         fpr (float) : The false positive ratio
 
     Returns:
-        The cardinality (int) of the intersection set or the intersection
-        set (List[str]) itself of client and server items
+        The intersection set (List[str]) of client and server items
     """
+    if len(client_items) == 0 or len(server_items) == 0:
+        return []
+
     c = client.CreateWithNewKey(True)
     s = server.CreateWithNewKey(True)
 

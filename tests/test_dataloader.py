@@ -92,7 +92,7 @@ class TestPartitionDistributingDataLoader:
                 self.dataset1, self.dataset1, batch_size=100
             )
 
-    def test_drop_non_intersecting(self):
+    def test_drop_non_intersecting_removes_correct_elements(self):
         dataloader = PartitionDistributingDataLoader(
             self.dataset1, self.dataset2, batch_size=100
         )
@@ -105,3 +105,15 @@ class TestPartitionDistributingDataLoader:
         assert 3 == len(dataloader.dataloader1.dataset.ids)
         assert 3 == len(dataloader.dataloader2.dataset.ids)
         assert torch.equal(sample_datapoint, dataloader.dataloader1.dataset.data[0])
+
+    def test_drop_non_intersecting_removes_all_elements_with_empty_intersection(self):
+        dataloader = PartitionDistributingDataLoader(
+            self.dataset1, self.dataset2, batch_size=100
+        )
+        intersection = []
+
+        dataloader.drop_non_intersecting(intersection)
+
+        assert 0 == len(dataloader.dataloader1.dataset.data)
+        assert 0 == len(dataloader.dataloader1.dataset.ids)
+        assert 0 == len(dataloader.dataloader2.dataset.ids)

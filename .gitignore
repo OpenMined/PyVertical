@@ -140,6 +140,9 @@ dmypy.json
 # PyCharm
 .idea/
 
+# Visual Studio Code
+.vscode/
+
 */.ipynb_checkpoints
 
 # Cython debug symbols

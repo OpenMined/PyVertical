@@ -80,18 +80,18 @@ class SplitNN:
 
 # Define our model segments
 
-input_size = 784
+INPUT_SIZE = 784
 hidden_sizes = [128, 640]
-output_size = 10
+OUTPUT_SIZE = 10
 
 models = [
     nn.Sequential(
-        nn.Linear(input_size, hidden_sizes[0]),
+        nn.Linear(INPUT_SIZE, hidden_sizes[0]),
         nn.ReLU(),
         nn.Linear(hidden_sizes[0], hidden_sizes[1]),
         nn.ReLU(),
     ),
-    nn.Sequential(nn.Linear(hidden_sizes[1], output_size), nn.LogSoftmax(dim=1)),
+    nn.Sequential(nn.Linear(hidden_sizes[1], OUTPUT_SIZE), nn.LogSoftmax(dim=1)),
 ]
 
 # # Send Model Segments to model locations

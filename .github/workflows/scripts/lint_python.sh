@@ -6,6 +6,14 @@ flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statist
 
 black --check src
 
+mypy src
+
+coverage run -m pytest -r src
+
+coverage report --ignore-errors --fail-under 95 -m
+
+# coverage report --ignore-errors --fail-under 100 -m --include="src/*"
+
 # Print changes.
 git diff
 # Already well formated if 'git diff' doesn't output anything.

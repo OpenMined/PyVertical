@@ -6,7 +6,7 @@ flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statist
 
 black --check src
 
-mypy src
+mypy src --ignore-missing-imports
 
 coverage run -m pytest -r src
 

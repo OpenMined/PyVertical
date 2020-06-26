@@ -8,6 +8,8 @@ from uuid import uuid4
 import numpy as np
 from PIL import Image
 
+# Ignore errors when running mypy script
+# mypy: ignore-errors
 
 Dataset = TypeVar("Dataset")
 

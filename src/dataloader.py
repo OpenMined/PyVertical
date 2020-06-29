@@ -73,7 +73,7 @@ class NewVerticalDataLoader:
 
     def __init__(self, dataset, *args, **kwargs):
 
-        # Split data
+        # Split datasets
         self.data_partition1, self.data_partition2 = partition_dataset(
             dataset, remove_data=False, keep_order=True
         )

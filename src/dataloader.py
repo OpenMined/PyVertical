@@ -2,7 +2,8 @@
 Vertically partitioned dataloader
 """
 import sys
-sys.path.append('../')
+
+sys.path.append("../")
 from typing import List, Tuple
 from uuid import UUID
 
@@ -63,6 +64,7 @@ class PartitionDistributingDataLoader:
     def __iter__(self):
         return zip(self.dataloader1, self.dataloader2)
 
+
 class NewVerticalDataLoader:
     """Dataloader which batches data from a complete
     set of vertically-partitioned datasets
@@ -70,9 +72,11 @@ class NewVerticalDataLoader:
     """
 
     def __init__(self, dataset, *args, **kwargs):
-        
+
         # Split data
-        self.data_partition1, self.data_partition2 = partition_dataset(dataset, remove_data=False, keep_order=True)
+        self.data_partition1, self.data_partition2 = partition_dataset(
+            dataset, remove_data=False, keep_order=True
+        )
 
         assert self.data_partition1.targets is None
         assert self.data_partition2.data is None

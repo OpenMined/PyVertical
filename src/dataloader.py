@@ -86,3 +86,6 @@ class NewVerticalDataLoader:
 
     def __iter__(self):
         return zip(self.dataloader1, self.dataloader2)
+
+    def __len__(self):
+        return (len(self.dataloader1) + len(self.dataloader2)) // 2

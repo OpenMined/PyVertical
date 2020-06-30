@@ -24,6 +24,8 @@ jobs:
           pip install -r requirements.txt
           pip install -U pytest
           pip install flake8 black
+      - name: Build bazel
+        run: .github/workflows/scripts/build_psi.sh
       - name: Run tests
         timeout-minutes: 15
         run: python -m pytest

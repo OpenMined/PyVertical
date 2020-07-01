@@ -37,6 +37,7 @@ PyVertical process:
 This project is written in Python.
 The work is displayed in jupyter notebooks.
 
+### Environment
 To install the dependencies,
 we recommend using [Conda]:
 1. Clone this repository
@@ -53,8 +54,13 @@ N.b. Installing the dependencies takes several steps to circumvent versioning in
 In the future,
 all packages will be moved into the `environment.yml`.
 
-In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical, you need to install [bazel](https://www.bazel.build/) to build the neccessary Python bindings for the C++ core.
+### PSI
+In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical,
+you need to install [bazel](https://www.bazel.build/) to build the necessary Python bindings for the C++ core.
 After you have installed bazel, run the build script with `./build-psi.sh`.
+
+This should generate a `_psi_bindings.py` file
+and place it in `src/psi/`.
 
 ## Usage
 To create a vertically partitioned dataset:
@@ -96,9 +102,9 @@ and [styleguide](https://github.com/OpenMined/.github/blob/master/STYLEGUIDE.md)
 for more information.
 
 ## Contributors
-|  [![TTitcombe](https://github.com/TTitcombe.png?size=150)][ttitcombe] | [![Pavlos-P](https://github.com/pavlos-p.png?size=150)][pavlos-p]  | [![H4ll](https://github.com/h4ll.png?size=150)][h4ll]
-| :--:|:--: |:--:|
-|  [TTitcombe] | [Pavlos-p]  | [H4LL]
+|  [![TTitcombe](https://github.com/TTitcombe.png?size=150)][ttitcombe] | [![Pavlos-P](https://github.com/pavlos-p.png?size=150)][pavlos-p]  | [![H4ll](https://github.com/h4ll.png?size=150)][h4ll] | [![rsandmann](https://github.com/rsandmann.png?size=150)][rsandmann]
+| :--:|:--: |:--:|:--:|
+|  [TTitcombe] | [Pavlos-p]  | [H4LL] | [rsandmann]
 
 ## Testing
 We use [`pytest`][pytest] to test the source code.
@@ -120,3 +126,4 @@ and [`black`][black] formatting
 [ttitcombe]: https://github.com/ttitcombe
 [pavlos-p]: https://github.com/pavlos-p
 [h4ll]: https://github.com/h4ll
+[rsandmann]: https://github.com/rsandmann

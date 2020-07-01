@@ -1,11 +1,15 @@
 """
 Vertically partitioned dataloader
 """
+import sys
+
+sys.path.append("../")
 from typing import List, Tuple
 from uuid import UUID
 
 from torch.utils.data import DataLoader
 from torch.utils.data._utils.collate import default_collate
+from src.dataset import partition_dataset
 
 
 def id_collate_fn(batch: Tuple) -> List:
@@ -66,3 +70,29 @@ class PartitionDistributingDataLoader:
         self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection]
 
         self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection]
+
+
+class NewVerticalDataLoader:
+    """Dataloader which batches data from a complete
+    set of vertically-partitioned datasets
+    i.e. the images dataset AND the labels dataset
+    """
+
+    def __init__(self, dataset, *args, **kwargs):
+
+        # Split datasets
+        self.data_partition1, self.data_partition2 = partition_dataset(
+            dataset, remove_data=False, keep_order=True
+        )
+
+        assert self.data_partition1.targets is None
+        assert self.data_partition2.data is None
+
+        self.dataloader1 = VerticalDataLoader(self.data_partition1, *args, **kwargs)
+        self.dataloader2 = VerticalDataLoader(self.data_partition2, *args, **kwargs)
+
+    def __iter__(self):
+        return zip(self.dataloader1, self.dataloader2)
+
+    def __len__(self):
+        return (len(self.dataloader1) + len(self.dataloader2)) // 2

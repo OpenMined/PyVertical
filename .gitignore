@@ -4,6 +4,9 @@
 
 */lightning_logs/
 
+# Bazel
+bazel-*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -136,6 +139,9 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+# Visual Studio Code
+.vscode/
 
 */.ipynb_checkpoints
 

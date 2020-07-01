@@ -53,6 +53,9 @@ N.b. Installing the dependencies takes several steps to circumvent versioning in
 In the future,
 all packages will be moved into the `environment.yml`.
 
+In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical, you need to install [bazel](https://www.bazel.build/) to build the neccessary Python bindings for the C++ core.
+After you have installed bazel, run the build script with `./build-psi.sh`.
+
 ## Usage
 To create a vertically partitioned dataset:
 ```python
@@ -61,15 +64,20 @@ from torchvision.transforms import ToTensor
 
 from src.dataloader import PartitionDistributingDataLoader
 from src.dataset import add_ids, partition_dataset
+from src.psi.util import compute_psi
 
 # Create dataset
 data = add_ids(MNIST)(".", download=True, transform=ToTensor())  # add_ids adds unique IDs to data points
 
 # Split data
-data_partition1, data_partition2 = partition_dataset(data)
+data_partition1, data_partition2 = partition_dataset(data, remove_data=False)
+
+# Compute private set intersection
+intersection = compute_psi(data_partition1.get_ids(), data_partition2.get_ids())
 
 # Batch data
 dataloader = PartitionDistributingDataLoader(data_partition1, data_partition2, batch_size=128)
+dataloader.drop_non_intersecting(intersection)
 
 for (data, ids1), (labels, ids2) in dataloader:
     # Train a model

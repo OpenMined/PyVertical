@@ -118,3 +118,7 @@ class TestPartition:
 
         assert len(dataset1) == len(dataset1.ids)
         assert len(dataset2) == len(dataset2.ids)
+
+    def test_get_ids_returns_list_of_strings(self):
+        for id_ in self.dataset.get_ids():
+            assert isinstance(id_, str)

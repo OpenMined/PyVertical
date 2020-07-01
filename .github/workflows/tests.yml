@@ -26,8 +26,10 @@ jobs:
           pip install flake8 black
           pip install mypy
           pip install coverage
+      - name: Build bazel
+        run: .github/workflows/scripts/build_psi.sh
       - name: Run tests
         timeout-minutes: 15
-        run: python -m pytest
+        run: python -m pytest tests/
       - name: Python linters
         run: .github/workflows/scripts/lint_python.sh

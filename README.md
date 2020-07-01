@@ -8,10 +8,10 @@
 
 A project developing Privacy Preserving Vertically Distributed Learning.
 
-- :lock: Links vertically partitioned data
+- :link: Links vertically partitioned data
          without exposing membership
          using Private Set Intersection (PSI)
-- :eye: Trains a model on vertically partitioned data
+- :lock: Trains a model on vertically partitioned data
         using SplitNNs,
         so only data holders can access data
 

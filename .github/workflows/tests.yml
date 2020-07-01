@@ -30,6 +30,6 @@ jobs:
         run: .github/workflows/scripts/build_psi.sh
       - name: Run tests
         timeout-minutes: 15
-        run: python -m pytest
+        run: python -m pytest tests/
       - name: Python linters
         run: .github/workflows/scripts/lint_python.sh

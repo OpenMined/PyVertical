@@ -8,7 +8,7 @@ black --check src
 
 mypy src --ignore-missing-imports
 
-coverage run -m pytest -r src
+coverage run -m pytest -r src --omit="*/bazel*"
 
 coverage report --ignore-errors --fail-under 95 -m
 

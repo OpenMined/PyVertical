@@ -3,7 +3,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 git_repository(
    name = "org_openmined_psi",
    remote = "https://github.com/OpenMined/PSI",
-   branch = "master",
+   commit = "be9ea907c42a0e7304ffa33d8e572acb18de0f92",
    init_submodules = True,
 )
 
@@ -14,4 +14,3 @@ psi_preload()
 load("@org_openmined_psi//private_set_intersection:deps.bzl", "psi_deps")
 
 psi_deps()
-

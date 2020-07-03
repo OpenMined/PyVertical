@@ -1,9 +1,8 @@
 """
-Vertically partitioned dataloader
+Dataloaders for vertically partitioned data
 """
-import sys
+from typing import List
 
-sys.path.append("../")
 from typing import List, Tuple
 from uuid import UUID
 
@@ -38,7 +37,7 @@ def id_collate_fn(batch: Tuple) -> List:
     return results
 
 
-class VerticalDataLoader(DataLoader):
+class SinglePartitionDataLoader(DataLoader):
     """DataLoader for a single vertically-partitioned dataset
     """
 
@@ -48,31 +47,7 @@ class VerticalDataLoader(DataLoader):
         self.collate_fn = id_collate_fn
 
 
-class PartitionDistributingDataLoader:
-    """Dataloader which batches data from a complete
-    set of vertically-partitioned datasets
-    i.e. the images dataset AND the labels dataset
-    """
-
-    def __init__(self, dataset1, dataset2, *args, **kwargs):
-        assert dataset1.targets is None
-        assert dataset2.data is None
-
-        self.dataloader1 = VerticalDataLoader(dataset1, *args, **kwargs)
-        self.dataloader2 = VerticalDataLoader(dataset2, *args, **kwargs)
-
-    def __iter__(self):
-        return zip(self.dataloader1, self.dataloader2)
-
-    def drop_non_intersecting(self, intersection):
-        """Remove elements and ids in the datasets that are not in the intersection."""
-        self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection]
-        self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection]
-
-        self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection]
-
-
-class NewVerticalDataLoader:
+class VerticalDataLoader:
     """Dataloader which batches data from a complete
     set of vertically-partitioned datasets
     i.e. the images dataset AND the labels dataset
@@ -88,11 +63,25 @@ class NewVerticalDataLoader:
         assert self.data_partition1.targets is None
         assert self.data_partition2.data is None
 
-        self.dataloader1 = VerticalDataLoader(self.data_partition1, *args, **kwargs)
-        self.dataloader2 = VerticalDataLoader(self.data_partition2, *args, **kwargs)
+        self.dataloader1 = SinglePartitionDataLoader(
+            self.data_partition1, *args, **kwargs
+        )
+        self.dataloader2 = SinglePartitionDataLoader(
+            self.data_partition2, *args, **kwargs
+        )
 
     def __iter__(self):
         return zip(self.dataloader1, self.dataloader2)
 
     def __len__(self):
         return (len(self.dataloader1) + len(self.dataloader2)) // 2
+
+    def drop_non_intersecting(self, intersection1: List[int], intersection2: List[int]):
+        """Remove elements and ids in the datasets that are not in the intersection."""
+        self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection1]
+        self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection1]
+
+        self.dataloader2.dataset.targets = elf.dataloader2.dataset.targets[
+            intersection2
+        ]
+        self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection2]

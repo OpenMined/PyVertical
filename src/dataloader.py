@@ -81,7 +81,7 @@ class VerticalDataLoader:
         self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection1]
         self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection1]
 
-        self.dataloader2.dataset.targets = elf.dataloader2.dataset.targets[
+        self.dataloader2.dataset.targets = self.dataloader2.dataset.targets[
             intersection2
         ]
         self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection2]

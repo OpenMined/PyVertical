@@ -108,7 +108,7 @@ class TestVerticalDataLoader:
         dataloader.drop_non_intersecting(intersection1, intersection2)
 
         assert len(dataloader.dataloader1.dataset.data) == 4
-        assert dataloader.dataloader1.dataset.ids == ids1
+        assert (dataloader.dataloader1.dataset.ids == ids1).all()
 
-        assert len(dataloader.dataloader2.data.targets) == 4
-        assert dataloader.dataloader2.dataset.ids == ids2
+        assert len(dataloader.dataloader2.dataset.targets) == 4
+        assert (dataloader.dataloader2.dataset.ids == ids2).all()

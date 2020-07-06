@@ -8,15 +8,17 @@ import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
-from src.dataloader import VerticalDataLoader, PartitionDistributingDataLoader
+from src.dataloader import VerticalDataLoader, SinglePartitionDataLoader
 from src.dataset import add_ids, partition_dataset
 
 
-class TestVerticalDataLoader:
+class TestSinglePartitionDataset:
     @classmethod
     def setup_class(cls):
         dataset = add_ids(MNIST)(
-            "./TestVerticalDataset", download=True, transform=transforms.ToTensor(),
+            "./TestSinglePartitionDataset",
+            download=True,
+            transform=transforms.ToTensor(),
         )
 
         dataset1, dataset2 = partition_dataset(dataset)
@@ -25,17 +27,17 @@ class TestVerticalDataLoader:
 
     @classmethod
     def teardown_class(cls):
-        rmtree("./TestVerticalDataset")
+        rmtree("./TestSinglePartitionDataset")
 
     def test_that_vertical_dataloader_only_returns_data_which_is_not_none(self):
-        dataloader1 = VerticalDataLoader(self.dataset1, batch_size=100)
+        dataloader1 = SinglePartitionDataLoader(self.dataset1, batch_size=100)
         for results in dataloader1:
             assert len(results) == 2
 
             # IDs should have been converted to string
             assert isinstance(results[1][0], str)
 
-        dataloader2 = VerticalDataLoader(self.dataset2, batch_size=100)
+        dataloader2 = SinglePartitionDataLoader(self.dataset2, batch_size=100)
         for results in dataloader2:
             assert len(results) == 2
 
@@ -43,29 +45,19 @@ class TestVerticalDataLoader:
             assert isinstance(results[1][0], str)
 
 
-class TestPartitionDistributingDataLoader:
+class TestVerticalDataLoader:
     @classmethod
     def setup_class(cls):
-        dataset = add_ids(MNIST)(
-            "./TestPartitionDistributingDataLoader",
-            download=True,
-            transform=transforms.ToTensor(),
+        cls.dataset = add_ids(MNIST)(
+            "./TestVerticalDataLoader", download=True, transform=transforms.ToTensor(),
         )
-
-        dataset1, dataset2 = partition_dataset(
-            dataset, remove_data=False,
-        )  # for now, until PSI allows us to re-balance datasets
-        cls.dataset1 = dataset1
-        cls.dataset2 = dataset2
 
     @classmethod
     def teardown_class(cls):
-        rmtree("./TestPartitionDistributingDataLoader")
+        rmtree("./TestVerticalDataLoader")
 
     def test_vertical_dataloader_batches_partitioned_datasets(self):
-        dataloader = PartitionDistributingDataLoader(
-            self.dataset1, self.dataset2, batch_size=100
-        )
+        dataloader = VerticalDataLoader(self.dataset, batch_size=100)
 
         for results in dataloader:
             assert len(results) == 2  # dataset1_data, dataset2_data
@@ -80,40 +72,43 @@ class TestPartitionDistributingDataLoader:
             assert isinstance(results[0][1][0], str)
             assert isinstance(results[1][1][0], str)
 
-    def test_that_dataset1_must_not_have_targets(self):
-        with pytest.raises(AssertionError):
-            dataloader = PartitionDistributingDataLoader(
-                self.dataset2, self.dataset2, batch_size=100
-            )
-
-    def test_that_dataset2_must_not_have_data(self):
-        with pytest.raises(AssertionError):
-            dataloader = PartitionDistributingDataLoader(
-                self.dataset1, self.dataset1, batch_size=100
-            )
-
-    def test_drop_non_intersecting_removes_correct_elements(self):
-        dataloader = PartitionDistributingDataLoader(
-            self.dataset1, self.dataset2, batch_size=100
-        )
+    def test_drop_non_intersecting_removes_elements(self):
+        dataloader = VerticalDataLoader(self.dataset, batch_size=100)
         sample_datapoint = dataloader.dataloader1.dataset.data[0]
         intersection = [0, 1, 2]
 
-        dataloader.drop_non_intersecting(intersection)
+        dataloader.drop_non_intersecting(intersection, intersection)
 
-        assert 3 == len(dataloader.dataloader1.dataset.data)
-        assert 3 == len(dataloader.dataloader1.dataset.ids)
-        assert 3 == len(dataloader.dataloader2.dataset.ids)
+        assert len(dataloader.dataloader1.dataset.data) == 3
+        assert len(dataloader.dataloader1.dataset.ids) == 3
+        assert len(dataloader.dataloader2.dataset.targets) == 3
+        assert len(dataloader.dataloader2.dataset.ids) == 3
         assert torch.equal(sample_datapoint, dataloader.dataloader1.dataset.data[0])
 
     def test_drop_non_intersecting_removes_all_elements_with_empty_intersection(self):
-        dataloader = PartitionDistributingDataLoader(
-            self.dataset1, self.dataset2, batch_size=100
-        )
+        dataloader = VerticalDataLoader(self.dataset, batch_size=100)
         intersection = []
 
-        dataloader.drop_non_intersecting(intersection)
+        dataloader.drop_non_intersecting(intersection, intersection)
 
-        assert 0 == len(dataloader.dataloader1.dataset.data)
-        assert 0 == len(dataloader.dataloader1.dataset.ids)
-        assert 0 == len(dataloader.dataloader2.dataset.ids)
+        assert len(dataloader.dataloader1.dataset.data) == 0
+        assert len(dataloader.dataloader1.dataset.ids) == 0
+        assert len(dataloader.dataloader2.dataset.targets) == 0
+        assert len(dataloader.dataloader2.dataset.ids) == 0
+
+    def test_datasets_have_same_ids_after_drop_non_intersecting(self):
+        dataloader = VerticalDataLoader(self.dataset, batch_size=128)
+
+        intersection1 = [0, 1, 5, 10]
+        ids1 = [dataloader.dataloader1.dataset.ids[i] for i in intersection1]
+
+        intersection2 = [7, 10, 12, 1]
+        ids2 = [dataloader.dataloader2.dataset.ids[i] for i in intersection2]
+
+        dataloader.drop_non_intersecting(intersection1, intersection2)
+
+        assert len(dataloader.dataloader1.dataset.data) == 4
+        assert (dataloader.dataloader1.dataset.ids == ids1).all()
+
+        assert len(dataloader.dataloader2.dataset.targets) == 4
+        assert (dataloader.dataloader2.dataset.ids == ids2).all()

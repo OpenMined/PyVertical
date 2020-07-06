@@ -62,22 +62,22 @@ To create a vertically partitioned dataset:
 from torchvision.datasets import MNIST
 from torchvision.transforms import ToTensor
 
-from src.dataloader import PartitionDistributingDataLoader
-from src.dataset import add_ids, partition_dataset
+from src.dataloader import VerticalDataLoader
+from src.dataset import add_ids
 from src.psi.util import compute_psi
 
 # Create dataset
 data = add_ids(MNIST)(".", download=True, transform=ToTensor())  # add_ids adds unique IDs to data points
 
-# Split data
-data_partition1, data_partition2 = partition_dataset(data, remove_data=False)
+# Partition and batch data
+dataloader = VerticalDataLoader(data, batch_size=128)
 
-# Compute private set intersection
-intersection = compute_psi(data_partition1.get_ids(), data_partition2.get_ids())
+# Compute private set intersections
+intersection1 = compute_psi(dataloader.dataloader1.dataset.get_ids(), dataloader.dataloader2.dataset.get_ids())
+intersection2 = compute_psi(dataloader.dataloader2.dataset.get_ids(), dataloader.dataloader1.dataset.get_ids())
 
-# Batch data
-dataloader = PartitionDistributingDataLoader(data_partition1, data_partition2, batch_size=128)
-dataloader.drop_non_intersecting(intersection)
+# Order data
+dataloader.drop_non_intersecting(intersection1, intersection2)
 
 for (data, ids1), (labels, ids2) in dataloader:
     # Train a model

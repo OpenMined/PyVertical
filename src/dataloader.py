@@ -57,7 +57,7 @@ class VerticalDataLoader:
 
         # Split datasets
         self.data_partition1, self.data_partition2 = partition_dataset(
-            dataset, remove_data=False, keep_order=True
+            dataset, remove_data=False, keep_order=False
         )
 
         assert self.data_partition1.targets is None
@@ -85,3 +85,10 @@ class VerticalDataLoader:
             intersection2
         ]
         self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection2]
+
+    def sort_by_ids(self) -> None:
+        """
+        Sort each dataset by ids
+        """
+        self.dataloader1.dataset.sort_by_ids()
+        self.dataloader2.dataset.sort_by_ids()

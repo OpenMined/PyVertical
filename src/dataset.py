@@ -64,6 +64,21 @@ def add_ids(cls):
             """Return a list of the ids of this dataset."""
             return [str(id_) for id_ in self.ids]
 
+        def sort_by_ids(self):
+            """
+            Sort the dataset by IDs in ascending order
+            """
+            ids = self.get_ids()
+            sorted_idxs = np.argsort(ids)
+
+            if self.data is not None:
+                self.data = self.data[sorted_idxs]
+
+            if self.targets is not None:
+                self.targets = self.targets[sorted_idxs]
+
+            self.ids = self.ids[sorted_idxs]
+
     return VerticalDataset
 
 

@@ -85,3 +85,10 @@ class VerticalDataLoader:
             intersection2
         ]
         self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection2]
+
+    def sort_by_ids(self) -> None:
+        """
+        Sort each dataset by ids
+        """
+        self.dataloader1.dataset.sort_by_ids()
+        self.dataloader2.dataset.sort_by_ids()

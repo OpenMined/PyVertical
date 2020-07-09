@@ -78,6 +78,7 @@ intersection2 = compute_psi(dataloader.dataloader2.dataset.get_ids(), dataloader
 
 # Order data
 dataloader.drop_non_intersecting(intersection1, intersection2)
+dataloader.sort_by_ids()
 
 for (data, ids1), (labels, ids2) in dataloader:
     # Train a model

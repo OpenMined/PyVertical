@@ -6,6 +6,7 @@ from shutil import rmtree
 import uuid
 
 import numpy as np
+import pytest
 import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
@@ -122,3 +123,43 @@ class TestPartition:
     def test_get_ids_returns_list_of_strings(self):
         for id_ in self.dataset.get_ids():
             assert isinstance(id_, str)
+
+    def test_sort_by_ids_sorts_data(self):
+        dataset1, _ = partition_dataset(self.dataset)
+
+        data_unsorted = dataset1.data.clone().numpy()
+        ids1_unsorted = dataset1.get_ids()
+        ids1_sorted = np.sort(ids1_unsorted)
+
+        # Check it's not sorted to start with
+        with pytest.raises(AssertionError):
+            np.testing.assert_array_equal(ids1_unsorted, ids1_sorted)
+
+        # Sort
+        dataset1.sort_by_ids()
+        data_after_sort = dataset1.data.clone().numpy()
+
+        np.testing.assert_array_equal(dataset1.get_ids(), ids1_sorted)
+
+        # Check that data has also been shuffled
+        with pytest.raises(AssertionError):
+            np.testing.assert_array_equal(data_after_sort, data_unsorted)
+
+    def test_sort_by_ids_sorts_targets(self):
+        _, dataset2 = partition_dataset(self.dataset)
+
+        targets_unsorted = dataset2.targets.clone().numpy()
+        ids2_unsorted = dataset2.get_ids()
+        ids2_sorted = np.sort(ids2_unsorted)
+
+        with pytest.raises(AssertionError):
+            np.testing.assert_array_equal(ids2_unsorted, ids2_sorted)
+
+        # Sort
+        dataset2.sort_by_ids()
+        targets_after_sort = dataset2.targets.clone().numpy()
+
+        np.testing.assert_array_equal(dataset2.get_ids(), ids2_sorted)
+
+        with pytest.raises(AssertionError):
+            np.testing.assert_array_equal(targets_after_sort, targets_unsorted)

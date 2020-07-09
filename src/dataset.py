@@ -63,7 +63,7 @@ def add_ids(cls):
         def get_ids(self) -> List[str]:
             """Return a list of the ids of this dataset."""
             return [str(id_) for id_ in self.ids]
-       
+
         def sort_by_ids(self):
             """
             Sort the dataset by IDs in ascending order

@@ -26,6 +26,7 @@ jobs:
           pip install flake8 black
           pip install mypy
           pip install coverage
+          pip install pybind11
       - name: Build bazel
         run: .github/workflows/scripts/build_psi.sh
       - name: Run tests

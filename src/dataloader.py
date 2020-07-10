@@ -57,7 +57,7 @@ class VerticalDataLoader:
 
         # Split datasets
         self.data_partition1, self.data_partition2 = partition_dataset(
-            dataset, remove_data=True, keep_order=False
+            dataset, remove_data=False, keep_order=False
         )
 
         assert self.data_partition1.targets is None

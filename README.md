@@ -6,7 +6,7 @@
 
 # PyVertical
 
-A project developing Privacy Preserving Vertically Distributed Learning.
+A project developing privacy-preserving, vertically-distributed learning.
 
 - :link: Links vertically partitioned data
          without exposing membership
@@ -15,6 +15,23 @@ A project developing Privacy Preserving Vertically Distributed Learning.
         using SplitNNs,
         so only data holders can access data
 
+Vertically-partitioned data is data
+in which
+fields relating to a single record
+are distributed across multiple datasets.
+For example,
+multiple hospitals may have admissions data on the same individuals.
+Vertically-partitioned data could be applied to solve vital problems,
+but data holders can't combine their datasets
+by simply comparing notes with other data holders
+unless they want to break user privacy.
+`PyVertical` uses [PSI](https://www.github.com/OpenMined/PSI)
+to link datasets in a privacy-preserving way.
+We train SplitNNs on the partitioned data
+to ensure the data remains separate throughout the entire process.
+
+
+## The Process
 
 ![PyVertical diagram](./images/diagram_white_background.png)
 
@@ -57,39 +74,25 @@ all packages will be moved into the `environment.yml`.
 ### PSI
 In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical,
 you need to install [bazel](https://www.bazel.build/) to build the necessary Python bindings for the C++ core.
-After you have installed bazel, run the build script with `./build-psi.sh`.
+After you have installed bazel, run the build script with `.github/workflows/build-psi.sh`.
 
-This should generate a `_psi_bindings.py` file
+This should generate a `_psi_bindings.so` file
 and place it in `src/psi/`.
 
 ## Usage
-To create a vertically partitioned dataset:
-```python
-from torchvision.datasets import MNIST
-from torchvision.transforms import ToTensor
+Check out
+[`examples/PyVertical Example.ipynb`](examples/PyVertical%20Example.ipynb)
+to see `PyVertical` in action.
 
-from src.dataloader import VerticalDataLoader
-from src.dataset import add_ids
-from src.psi.util import compute_psi
+## Goals
 
-# Create dataset
-data = add_ids(MNIST)(".", download=True, transform=ToTensor())  # add_ids adds unique IDs to data points
-
-# Partition and batch data
-dataloader = VerticalDataLoader(data, batch_size=128)
-
-# Compute private set intersections
-intersection1 = compute_psi(dataloader.dataloader1.dataset.get_ids(), dataloader.dataloader2.dataset.get_ids())
-intersection2 = compute_psi(dataloader.dataloader2.dataset.get_ids(), dataloader.dataloader1.dataset.get_ids())
-
-# Order data
-dataloader.drop_non_intersecting(intersection1, intersection2)
-dataloader.sort_by_ids()
-
-for (data, ids1), (labels, ids2) in dataloader:
-    # Train a model
-    pass
-```
+- [X] MVP
+    - Simple example on MNIST dataset
+    - One data holder has images, the other has labels
+- [ ] Extension demonstration
+    - Apply process to electronic health records (EHR) dataset
+    - Dual-headed SplitNN: input data is split amongst several data holders
+- [ ] Integrate with [`syft`](https://www.github.com/OpenMined/PySyft)
 
 ## Contributing
 Pull requests are welcome.

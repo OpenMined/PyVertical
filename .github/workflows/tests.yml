@@ -37,6 +37,9 @@ jobs:
           mypy src --ignore-missing-imports
   OtherOS:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
         matrix:
           os: [macos-latest, windows-latest, ubuntu-20.04]

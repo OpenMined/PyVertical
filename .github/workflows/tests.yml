@@ -32,7 +32,7 @@ jobs:
       - name: Python linters
         run: .github/workflows/scripts/lint_python.sh
   OtherOS:
-    runs_on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
         os: [macos-latest, windows-latest, ubuntu-20.04]
     steps:

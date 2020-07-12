@@ -30,7 +30,11 @@ jobs:
         timeout-minutes: 15
         run: python -m pytest tests/
       - name: Python linters
-        run: .github/workflows/scripts/lint_python.sh
+        run: |
+          flake8 --config=.flake8 .
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
+          black --check src
+          mypy src --ignore-missing-imports
   OtherOS:
     runs-on: ${{ matrix.os }}
     strategy:

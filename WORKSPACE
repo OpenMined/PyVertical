@@ -3,7 +3,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 git_repository(
    name = "org_openmined_psi",
    remote = "https://github.com/OpenMined/PSI",
-   commit = "2110b0c78aaf535f0f154541a5239ae1d4876023",
+   branch = "fix_c++_version",
    init_submodules = True,
 )
 

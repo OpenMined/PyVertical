@@ -37,6 +37,9 @@ jobs:
           mypy src --ignore-missing-imports
   Windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
@@ -56,9 +59,6 @@ jobs:
         run: python -m pytest tests/
   OtherOS:
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
     strategy:
         matrix:
           os: [macos-latest, ubuntu-20.04]

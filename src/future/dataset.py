@@ -2,9 +2,14 @@
 Future datasets functionality.
 Build from syft FederatedDatasets
 """
+import logging
+
 import torch
 import syft as sy
 from syft.frameworks.torch import fl
+
+
+logger = logging.getLogger(__name__)
 
 
 class PartitionedDataset(fl.BaseDataset):
@@ -177,3 +182,70 @@ class PartitionedDataset(fl.BaseDataset):
             description=proto_dataset.description,
             child=child,
         )
+
+
+def vertically_federate(dataset, workers):
+    """
+    Add a method to easily transform a PartitionedDataset
+    into a VerticalDataset. The dataset given is split in len(workers)
+    part and sent to each workers
+
+    Currently only supports the case where two workes are provided,
+    one takes the data and the other takes the targets
+
+    Raises:
+        AssertionError: If more or fewer than two workers are provided.
+            If dataset does not have both data and targets
+    """
+    logger.info(f"Scanning and sending data to {', '.join([w.id for w in workers])}...")
+
+    assert len(workers) == 2, "Two workers must be provided"
+    assert (
+        dataset.has_data and dataset.has_targets
+    ), "Dataset must have data and targets"
+
+    datasets = []
+
+    data = dataset.data.send(workers[0])
+    datasets.append(PartitionedDataset(data=data))
+
+    targets = dataset.targets.send(workers[1])
+    datasets.append(PartitionedDataset(targets=targets))
+
+    logger.debug("Done!")
+    return VerticalDataset(datasets)
+
+
+PartitionedDataset.vertically_federate = vertically_federate
+
+
+class VerticalDataset(fl.FederatedDataset):
+    def __init__(self, datasets):
+        """This class takes a list of datasets, each of which is supposed
+        to be already sent to a remote worker (they have a location), and
+        acts like a dictionary based on the worker ids.
+        It serves like an input for the VerticalDataLoader.
+
+        Currently only supports the case with only two datasets -
+        one has the data and the other has the targets
+
+        Args:
+            datasets (list): list of remote Datasets
+
+        Raises:
+            AssertionError: if more than 2 datasets are provided
+            RuntimeError: if a dataset has neither data or targets
+        """
+        assert len(datasets) == 2
+
+        self.datasets = {}
+        for dataset in datasets:
+
+            if dataset.has_data:
+                worker_id = dataset.data.location.id
+            elif dataset.has_targets:
+                worker_id = dataset.targets.location.id
+            else:
+                raise RuntimeError("Dataset has neither data nor targets")
+
+            self.datasets[worker_id] = dataset

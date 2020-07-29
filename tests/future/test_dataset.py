@@ -2,7 +2,7 @@ import pytest
 import torch as th
 import syft as sy
 
-from src.future import PartitionedDataset
+from src.future import PartitionedDataset, VerticalDataset
 
 
 hook = sy.TorchHook(th)
@@ -122,3 +122,65 @@ def test_partitioned_dataset_transform_with_no_data():
 
     with pytest.raises(TypeError):
         transform_dataset.transform(func)
+
+
+def test_vertically_federated_raises_if_more_than_two_workers_are_provided():
+    sy.local_worker.clear_objects()
+
+    alice = sy.VirtualWorker(id="alice", hook=hook, is_client_worker=False)
+    bob = sy.VirtualWorker(id="bob", hook=hook, is_client_worker=False)
+    charlie = sy.VirtualWorker(id="charlie", hook=hook, is_client_worker=False)
+
+    inputs = th.tensor([1, 2, 3, 4.0])
+    targets = th.tensor([1, 2, 3, 4.0])
+
+    dataset = PartitionedDataset(inputs, targets)
+
+    with pytest.raises(AssertionError):
+        vertical_dataset = dataset.vertically_federate((alice, bob, charlie))
+
+    alice.remove_worker_from_local_worker_registry()
+    bob.remove_worker_from_local_worker_registry()
+    charlie.remove_worker_from_local_worker_registry()
+
+
+def test_vertically_federate_raises_if_dataset_does_not_have_data_and_targets():
+    sy.local_worker.clear_objects()
+
+    alice = sy.VirtualWorker(id="alice", hook=hook, is_client_worker=False)
+    bob = sy.VirtualWorker(id="bob", hook=hook, is_client_worker=False)
+
+    inputs = th.tensor([1, 2, 3, 4.0])
+    targets = th.tensor([1, 2, 3, 4.0])
+
+    data_only_dataset = PartitionedDataset(data=inputs)
+
+    with pytest.raises(AssertionError):
+        vertical_dataset = data_only_dataset.vertically_federate((alice, bob))
+
+    targets_only_dataset = PartitionedDataset(targets=targets)
+
+    with pytest.raises(AssertionError):
+        vertical_dataset = targets_only_dataset.vertically_federate((alice, bob))
+
+    alice.remove_worker_from_local_worker_registry()
+    bob.remove_worker_from_local_worker_registry()
+
+
+def test_vertically_federate_returns_a_vertical_dataset():
+    sy.local_worker.clear_objects()
+
+    alice = sy.VirtualWorker(id="alice", hook=hook, is_client_worker=False)
+    bob = sy.VirtualWorker(id="bob", hook=hook, is_client_worker=False)
+
+    inputs = th.tensor([1, 2, 3, 4.0])
+    targets = th.tensor([1, 2, 3, 4.0])
+
+    datset = PartitionedDataset(data=inputs, targets=targets)
+
+    vertical_dataset = datset.vertically_federate((alice, bob))
+
+    assert isinstance(vertical_dataset, VerticalDataset)
+
+    alice.remove_worker_from_local_worker_registry()
+    bob.remove_worker_from_local_worker_registry()

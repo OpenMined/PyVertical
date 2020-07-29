@@ -1,1 +1,1 @@
-from .dataset import PartitionedDataset
+from .dataset import PartitionedDataset, VerticalDataset

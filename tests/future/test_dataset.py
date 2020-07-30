@@ -173,14 +173,46 @@ def test_vertically_federate_returns_a_vertical_dataset():
     alice = sy.VirtualWorker(id="alice", hook=hook, is_client_worker=False)
     bob = sy.VirtualWorker(id="bob", hook=hook, is_client_worker=False)
 
-    inputs = th.tensor([1, 2, 3, 4.0])
-    targets = th.tensor([1, 2, 3, 4.0])
+    inputs = th.tensor([1, 2, 3, 4.0]).tag("#test")
+    targets = th.tensor([1, 2, 3, 4.0]).tag("#test")
 
     datset = PartitionedDataset(data=inputs, targets=targets)
 
     vertical_dataset = datset.vertically_federate((alice, bob))
 
     assert isinstance(vertical_dataset, VerticalDataset)
+
+    assert vertical_dataset.workers == ["alice", "bob"]
+
+    alice_results = alice.search(["#test"])
+    assert len(alice_results) == 1
+
+    bob_results = bob.search(["#test"])
+    assert len(bob_results) == 1
+
+    alice.remove_worker_from_local_worker_registry()
+    bob.remove_worker_from_local_worker_registry()
+
+
+def test_that_vertical_dataset_can_return_datsets():
+    sy.local_worker.clear_objects()
+
+    alice = sy.VirtualWorker(id="alice", hook=hook, is_client_worker=False)
+    bob = sy.VirtualWorker(id="bob", hook=hook, is_client_worker=False)
+
+    inputs = th.tensor([1, 2, 3, 4.0])
+    targets = th.tensor([1, 2, 3, 4.0])
+
+    datset = PartitionedDataset(data=inputs, targets=targets)
+
+    vertical_dataset = datset.vertically_federate((alice, bob))
+    assert vertical_dataset.workers == ["alice", "bob"]
+
+    # Collect alice's dataset
+    alice_dataset = vertical_dataset.get_dataset("alice")
+
+    # VerticalDataset should only have bob now
+    assert vertical_dataset.workers == ["bob"]
 
     alice.remove_worker_from_local_worker_registry()
     bob.remove_worker_from_local_worker_registry()

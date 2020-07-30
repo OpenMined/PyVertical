@@ -168,12 +168,12 @@ class PartitionedDataset(fl.BaseDataset):
         Returns:
              PartitionedDataset: deserialized BaseDatasetPB.
         """
-        data = syft.serde.protobuf.serde._unbufferize(worker, proto_dataset.data)
-        targets = syft.serde.protobuf.serde._unbufferize(worker, proto_dataset.targets)
-        dataset_id = syft.serde.protobuf.proto.get_protobuf_id(proto_dataset.id)
+        data = sy.serde.protobuf.serde._unbufferize(worker, proto_dataset.data)
+        targets = sy.serde.protobuf.serde._unbufferize(worker, proto_dataset.targets)
+        dataset_id = sy.serde.protobuf.proto.get_protobuf_id(proto_dataset.id)
         child = None
         if proto_dataset.HasField("child"):
-            child = syft.serde.protobuf.serde._unbufferize(worker, proto_dataset.child)
+            child = sy.serde.protobuf.serde._unbufferize(worker, proto_dataset.child)
         return PartitionedDataset(
             data=data,
             targets=targets,

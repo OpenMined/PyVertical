@@ -55,6 +55,7 @@ This project is written in Python.
 The work is displayed in jupyter notebooks.
 
 ### Environment
+
 To install the dependencies,
 we recommend using [Conda]:
 1. Clone this repository
@@ -72,6 +73,7 @@ In the future,
 all packages will be moved into the `environment.yml`.
 
 ### PSI
+
 In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical,
 you need to install [bazel](https://www.bazel.build/) to build the necessary Python bindings for the C++ core.
 After you have installed bazel, run the build script with `.github/workflows/build-psi.sh`.
@@ -79,7 +81,18 @@ After you have installed bazel, run the build script with `.github/workflows/bui
 This should generate a `_psi_bindings.so` file
 and place it in `src/psi/`.
 
+### Docker
+
+You can instead opt to use Docker.
+
+To run:
+
+1. Build the image with `docker build -t pyvertical:latest .`
+1. Launch a container with `docker run -it -p 8888:8888 pyvertical:latest`
+  - Defaults to launching jupyter lab
+
 ## Usage
+
 Check out
 [`examples/PyVertical Example.ipynb`](examples/PyVertical%20Example.ipynb)
 to see `PyVertical` in action.

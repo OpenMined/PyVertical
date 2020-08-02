@@ -157,6 +157,3 @@ images/*
 # Ignore data
 data/synthea/*
 !data/synthea/.gitkeep
-
-# Ignore synthea repo
-synthea

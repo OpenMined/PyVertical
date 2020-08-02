@@ -8,7 +8,7 @@ from uuid import UUID
 
 from torch.utils.data import DataLoader
 from torch.utils.data._utils.collate import default_collate
-from src.dataset import partition_dataset
+from src.utils import partition_dataset
 
 
 def id_collate_fn(batch: Tuple) -> List:

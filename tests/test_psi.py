@@ -3,7 +3,7 @@ Test code in src/psi
 """
 import pytest
 
-from src.psi.util import compute_psi
+from src.psi.util import Client, Server
 
 
 @pytest.mark.parametrize(
@@ -20,5 +20,21 @@ from src.psi.util import compute_psi
         (([], []), []),
     ],
 )
-def test_compute_psi_returns_correct_indices(test_input, expected):
-    assert expected == compute_psi(*test_input)
+def test_compute_intersection_returns_correct_indices(test_input, expected):
+    client_items = test_input[0]
+    server_items = test_input[1]
+
+    # Handle special case of empty client or server items
+    if len(client_items) == 0 or len(server_items) == 0:
+        with pytest.raises(RuntimeError):
+            client = Client(client_items)
+            server = Server(server_items)
+        return
+
+    client = Client(client_items)
+    server = Server(server_items)
+
+    setup, response = server.process_request(client.request, len(client_items))
+    intersection = client.compute_intersection(setup, response)
+
+    assert expected == intersection

@@ -36,7 +36,6 @@ class Server:
             setup (_psi_bindings.PsiProtoServerSetup): The server setup
             response (_psi_bindings.PsiProtoResponse): The server response
         """
-        breakpoint()
         setup = self._server.CreateSetupMessage(
             self._fpr, len_client_items, self._items
         )

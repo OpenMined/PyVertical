@@ -5,6 +5,8 @@ from . import client, server
 
 class Server:
     def __init__(self, server_items, fpr=1e-9):
+        if len(server_items) == 0:
+            raise RuntimeError("Server items cannot be empty")
         reveal_intersection = True
         self._server = server.CreateWithNewKey(reveal_intersection)
         self._items = server_items
@@ -20,6 +22,8 @@ class Server:
 
 class Client:
     def __init__(self, client_items):
+        if len(client_items) == 0:
+            raise RuntimeError("Server items cannot be empty")
         reveal_intersection = True
         self._client = client.CreateWithNewKey(reveal_intersection)
         self._items = client_items

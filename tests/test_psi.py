@@ -15,21 +15,11 @@ from src.psi.util import Client, Server
         ),
         ((["0"], ["0"]), [0]),
         ((["1"], ["2"]), []),
-        ((["1"], []), []),
-        (([], ["1"]), []),
-        (([], []), []),
     ],
 )
 def test_compute_intersection_returns_correct_indices(test_input, expected):
     client_items = test_input[0]
     server_items = test_input[1]
-
-    # Handle special case of empty client or server items
-    if len(client_items) == 0 or len(server_items) == 0:
-        with pytest.raises(RuntimeError):
-            client = Client(client_items)
-            server = Server(server_items)
-        return
 
     client = Client(client_items)
     server = Server(server_items)
@@ -38,3 +28,17 @@ def test_compute_intersection_returns_correct_indices(test_input, expected):
     intersection = client.compute_intersection(setup, response)
 
     assert expected == intersection
+
+
+@pytest.mark.parametrize(
+    "test_input,expected", [((["1"], []), []), (([], ["1"]), []), (([], []), []),],
+)
+def test_compute_intersection_returns_correct_indices_with_empty_items(
+    test_input, expected
+):
+    client_items = test_input[0]
+    server_items = test_input[1]
+
+    with pytest.raises(RuntimeError):
+        client = Client(client_items)
+        server = Server(server_items)

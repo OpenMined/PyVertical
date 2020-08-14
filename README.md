@@ -30,6 +30,10 @@ to link datasets in a privacy-preserving way.
 We train SplitNNs on the partitioned data
 to ensure the data remains separate throughout the entire process.
 
+See the [changelog](./CHANGELOG.md)
+for information
+on the current status of `PyVertical`.
+
 
 ## The Process
 

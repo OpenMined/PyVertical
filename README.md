@@ -76,7 +76,7 @@ all packages will be moved into the `environment.yml`.
 
 In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical,
 you need to install [bazel](https://www.bazel.build/) to build the necessary Python bindings for the C++ core.
-After you have installed bazel, run the build script with `.github/workflows/build-psi.sh`.
+After you have installed bazel, run the build script with `.github/workflows/scripts/build-psi.sh`.
 
 This should generate a `_psi_bindings.so` file
 and place it in `src/psi/`.

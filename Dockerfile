@@ -20,7 +20,7 @@ RUN apt update && apt install bazel
 RUN .github/workflows/scripts/build_psi.sh
 
 # Setup environment
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install jupyterlab
 
 # Expose port for jupyter lab

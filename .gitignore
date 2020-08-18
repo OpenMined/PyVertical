@@ -157,3 +157,6 @@ images/*
 # Ignore data
 data/synthea/*
 !data/synthea/.gitkeep
+
+examples/experimental/*
+!examples/experimental/*.ipynb

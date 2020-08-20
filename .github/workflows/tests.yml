@@ -39,4 +39,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check Image Builds
-      - run: docker build -t pyvertical:latest .
+        run: docker build -t pyvertical:latest .

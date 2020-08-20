@@ -17,7 +17,6 @@ RUN echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.
 ## 2. Install
 RUN apt update && apt install bazel
 
-#RUN bazel --version
 # Setup PSI
 RUN .github/workflows/scripts/build_psi.sh
 

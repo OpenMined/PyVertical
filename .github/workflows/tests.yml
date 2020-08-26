@@ -34,3 +34,9 @@ jobs:
         run: python -m pytest tests/
       - name: Python linters
         run: .github/workflows/scripts/lint_python.sh
+  Docker:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check Image Builds
+        run: docker build -t pyvertical:latest .

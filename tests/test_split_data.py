@@ -11,7 +11,7 @@ import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
-from src.dataset import add_ids, partition_dataset
+from src.utils import add_ids, partition_dataset
 
 
 class TestPartition:

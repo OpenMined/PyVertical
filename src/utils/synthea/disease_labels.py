@@ -32,11 +32,15 @@ def get_diagnosis_date(conditions: pd.DataFrame, disease: str) -> pd.DataFrame:
     conditions["DATE"] = pd.to_datetime(conditions["DATE"])
 
     for row in dates.iterrows():
-            patient_disease_dates = conditions.loc[(conditions["PATIENT"] == row["PATIENT"]) & (conditions["DESCRIPTION"] == disease), "DATE"]
+        patient_disease_dates = conditions.loc[
+            (conditions["PATIENT"] == row["PATIENT"])
+            & (conditions["DESCRIPTION"] == disease),
+            "DATE",
+        ]
 
-            # if there is at least one date, find the earliest
-            if not patient_disease_dates.empty:
-                row["DIAGNOSIS DATE"] = patient_disease_dates.min()
+        # if there is at least one date, find the earliest
+        if not patient_disease_dates.empty:
+            row["DIAGNOSIS DATE"] = patient_disease_dates.min()
 
     return dates
 
@@ -53,4 +57,9 @@ def get_binary_labels_for_disease(disease_dates: pd.DataFrame) -> "numpy.ndarray
         numpy.ndarray
             Array of binary values for disease prevalence
     """
-    return disease_dates["DIAGNOSIS DATE"].apply(lambda x: not pd.isna(x)).astype(int).values
+    return (
+        disease_dates["DIAGNOSIS DATE"]
+        .apply(lambda x: not pd.isna(x))
+        .astype(int)
+        .values
+    )

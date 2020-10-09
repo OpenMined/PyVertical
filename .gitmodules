@@ -1,0 +1,3 @@
+[submodule "third-party/synthea"]
+	path = third-party/synthea
+	url = https://github.com/synthetichealth/synthea.git

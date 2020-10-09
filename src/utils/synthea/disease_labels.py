@@ -25,7 +25,7 @@ def get_diagnosis_date(conditions: pd.DataFrame, disease: str) -> pd.DataFrame:
             If patient does not have the disease, value is NaN
     """
     # Initialise dataframe
-    dates = pd.DataFrame({"PATIENT": observations["PATIENT"].unique()})
+    dates = pd.DataFrame({"PATIENT": conditions["PATIENT"].unique()})
     dates["DIAGNOSIS DATE"] = pd.NaT
 
     # Make sure dates in observations are datetimes

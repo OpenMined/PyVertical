@@ -38,8 +38,7 @@ def id_collate_fn(batch: Tuple) -> List:
 
 
 class SinglePartitionDataLoader(DataLoader):
-    """DataLoader for a single vertically-partitioned dataset
-    """
+    """DataLoader for a single vertically-partitioned dataset"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

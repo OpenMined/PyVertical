@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python=3.7.*
   - numpy >=1.16
+  - pandas >= 1.0.0
   - pytorch=1.4.0
   - torchvision
   - cpuonly  # remove if using GPU

@@ -83,7 +83,9 @@ def add_ids(cls):
 
 
 def partition_dataset(
-    dataset: Dataset, keep_order: bool = False, remove_data: bool = True,
+    dataset: Dataset,
+    keep_order: bool = False,
+    remove_data: bool = True,
 ) -> Tuple[Dataset, Dataset]:
     """Vertically partition a torch dataset in two
 

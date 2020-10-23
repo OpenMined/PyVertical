@@ -26,6 +26,7 @@ class Server:
         """
         Return the setup and corresponding response for the client to compute
         the private set intersection.
+        
         Args:
             request (_psi_bindings.PsiProtoRequest): The client request
             len_client_items (int): The length of the client items

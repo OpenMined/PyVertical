@@ -30,6 +30,7 @@ class Server:
         Args:
             request (_psi_bindings.PsiProtoRequest): The client request
             len_client_items (int): The length of the client items
+            
         Returns:
             A tuple of (setup, response) with:
             setup (_psi_bindings.PsiProtoServerSetup): The server setup
@@ -62,9 +63,11 @@ class Client:
     def compute_intersection(self, setup, response):
         """
         Return the intersection of client and server items.
+
         Args:
             setup (_psi_bindings.PsiProtoServerSetup): The server setup
             response (_psi_bindings.PsiProtoResponse): The server response
+            
         Returns:
             The intersection set (List[str]) of client and server items
         """

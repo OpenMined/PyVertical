@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  Python:
+  Core:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -21,16 +21,44 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt --no-cache-dir
           pip install -U pytest
-          pip install flake8 black
-          pip install mypy
-          pip install coverage
-          pip install pybind11
+          pip install flake8 black mypy coverage
       - name: Build bazel
         run: .github/workflows/scripts/build_psi.sh
       - name: Run tests
         timeout-minutes: 15
         run: python -m pytest tests/
       - name: Python linters
-        run: .github/workflows/scripts/lint_python.sh
+        run: |
+          flake8 --config=.flake8 .
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
+          black --check src
+          mypy src --ignore-missing-imports
+  OtherOS:
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+          os: [macos-latest, ubuntu-20.04]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U pytest
+      - name: Build bazel
+        run: .github/workflows/scripts/build_psi.sh
+      - name: Run tests
+        timeout-minutes: 15
+        run: python -m pytest tests/
+  Docker:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check Image Builds
+        run: docker build -t pyvertical:latest .

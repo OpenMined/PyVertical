@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+
 """
 Test code in src/dataloader.py
 """
@@ -10,6 +13,7 @@ from torchvision.datasets import MNIST
 
 from src.dataloader import VerticalDataLoader, SinglePartitionDataLoader
 from src.utils import add_ids, partition_dataset
+from src.psi.util import Client, Server
 
 
 class TestSinglePartitionDataset:
@@ -77,7 +81,7 @@ class TestVerticalDataLoader:
         sample_datapoint = dataloader.dataloader1.dataset.data[0]
         intersection = [0, 1, 2]
 
-        dataloader.drop_non_intersecting(intersection, intersection)
+        dataloader.drop_non_intersecting(intersection)
 
         assert len(dataloader.dataloader1.dataset.data) == 3
         assert len(dataloader.dataloader1.dataset.ids) == 3
@@ -89,26 +93,38 @@ class TestVerticalDataLoader:
         dataloader = VerticalDataLoader(self.dataset, batch_size=100)
         intersection = []
 
-        dataloader.drop_non_intersecting(intersection, intersection)
+        dataloader.drop_non_intersecting(intersection)
 
         assert len(dataloader.dataloader1.dataset.data) == 0
         assert len(dataloader.dataloader1.dataset.ids) == 0
         assert len(dataloader.dataloader2.dataset.targets) == 0
         assert len(dataloader.dataloader2.dataset.ids) == 0
 
-    def test_datasets_have_same_ids_after_drop_non_intersecting(self):
-        dataloader = VerticalDataLoader(self.dataset, batch_size=128)
+    # def test_datasets_have_same_ids_after_drop_non_intersecting(self):
+    #     dataloader = VerticalDataLoader(self.dataset, batch_size=128)
 
-        intersection1 = [0, 1, 5, 10]
-        ids1 = [dataloader.dataloader1.dataset.ids[i] for i in intersection1]
+    #     intersection1 = [0, 1, 5, 10]
+    #     ids1 = [dataloader.dataloader1.dataset.ids[i] for i in intersection1]
 
-        intersection2 = [7, 10, 12, 1]
-        ids2 = [dataloader.dataloader2.dataset.ids[i] for i in intersection2]
+    #     intersection2 = [7, 10, 12, 1]
+    #     ids2 = [dataloader.dataloader2.dataset.ids[i] for i in intersection2]
 
-        dataloader.drop_non_intersecting(intersection1, intersection2)
+    #     # client_items = dataloader.dataloader1.dataset.get_ids()
+    #     # server_items = dataloader.dataloader2.dataset.get_ids()
 
-        assert len(dataloader.dataloader1.dataset.data) == 4
-        assert (dataloader.dataloader1.dataset.ids == ids1).all()
+    #     # client = Client(client_items)
+    #     # server = Server(server_items)
 
-        assert len(dataloader.dataloader2.dataset.targets) == 4
-        assert (dataloader.dataloader2.dataset.ids == ids2).all()
+    #     client = Client(ids1)
+    #     server = Server(ids2)
+
+    #     setup, response = server.process_request(client.request, len(client_items))
+    #     intersection = client.compute_intersection(setup, response)
+
+    #     dataloader.drop_non_intersecting(intersection)
+
+    #     assert len(dataloader.dataloader1.dataset.data) == 4
+    #     assert (dataloader.dataloader1.dataset.ids == ids1).all()
+
+    #     assert len(dataloader.dataloader2.dataset.targets) == 4
+    #     assert (dataloader.dataloader2.dataset.ids == ids2).all()

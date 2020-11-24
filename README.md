@@ -35,6 +35,7 @@ See the [changelog](./CHANGELOG.md)
 for information
 on the current status of `PyVertical`.
 
+**NOTE: PyVertical does not currently work with `syft 0.3.0`**
 
 ## The Process
 
@@ -69,7 +70,7 @@ we recommend using [Conda]:
     - This creates an environment `pyvertical-dev`
     - Comes with most dependencies you will need
 1. Activate the environment with `conda activate pyvertical-dev`
-1. Run `pip install syft[udacity]`
+1. Run `pip install syft==0.2.*`
 1. Run `conda install notebook`
 
 N.b. Installing the dependencies takes several steps to circumvent versioning incompatibility between

@@ -12,6 +12,7 @@
 ### Changed
 
 - Moved dataset splitting helper functions to "utils" folder
+- Pinned `syft` version in requirements to `< 0.3.0`
 
 
 ## [0.1.0] - 2020-07-10

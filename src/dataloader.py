@@ -75,15 +75,15 @@ class VerticalDataLoader:
     def __len__(self):
         return (len(self.dataloader1) + len(self.dataloader2)) // 2
 
-    def drop_non_intersecting(self, intersection1: List[int], intersection2: List[int]):
+    def drop_non_intersecting(self, intersection: List[int]):
         """Remove elements and ids in the datasets that are not in the intersection."""
-        self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection1]
-        self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection1]
+        self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection]
+        self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection]
 
         self.dataloader2.dataset.targets = self.dataloader2.dataset.targets[
-            intersection2
+            intersection
         ]
-        self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection2]
+        self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection]
 
     def sort_by_ids(self) -> None:
         """

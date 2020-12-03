@@ -60,7 +60,7 @@ PyVertical process:
 This project is written in Python.
 The work is displayed in jupyter notebooks.
 
-### Environment
+### PyTorch Environment
 
 To install the dependencies,
 we recommend using [Conda]:
@@ -77,6 +77,18 @@ N.b. Installing the dependencies takes several steps to circumvent versioning in
 `syft` and `jupyter`.
 In the future,
 all packages will be moved into the `environment.yml`.
+
+### Tensorflow Environment
+
+To install the dependencies,
+we recommend using [Conda]:
+1. Clone this repository
+1. In the command line, navigate to your local copy of the repository
+1. Run `conda env create -f tf_environment.yml`
+    - This creates an environment `pyvertical-dev-tf`
+    - Comes with most dependencies you will need
+1. Activate the environment with `conda activate pyvertical-dev-tf`
+1. Run `conda install notebook`
 
 ### PSI
 

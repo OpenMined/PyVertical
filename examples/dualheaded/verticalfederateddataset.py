@@ -4,51 +4,78 @@ import torch
 from torch.utils.data import Dataset
 
 
-def split_data(n_workers, dataset)
+def split_data(dataset, worker_list=None, n_workers=None):
+        
+    if worker_list == None:
+        if n_workers == None: 
+            n_workers = 2  #default
+        worker_list = list(range(0, n_workers))
+            
     idx = 0
+    
     dic_single_datasets = {}
-    for i in range(0, n_workers): 
-        dic_single_datasets[i] = []
-
+    for worker in worker_list: 
+        dic_single_datasets[worker] = [[],[],[]]
+        
     for tensor, label in dataset: 
-        height = tensor.shape[-1]//n_workers
-        data_parts_list = []
-        #put in a list the parts to give to single workers
-        for i in range(0,n_workers-1):
-            dic_single_datasets[i].append(tuple([tensor[:, :, height * i : height * (i + 1)], label, idx]))
-        dic_single_datasets[n_workers-1].append(tuple([tensor[:, :, height * (i+1) : ], label, idx ])) #last part of the image
-
+        height = tensor.shape[-1]//len(worker_list)
+        i = 0
+        for worker in worker_list[:-1]: 
+            dic_single_datasets[worker][0].append(tensor[:, :, height * i : height * (i + 1)])
+            dic_single_datasets[worker][1].append(label)
+            dic_single_datasets[worker][2].append(idx)
+            i += 1
+            
+        dic_single_datasets[worker_list[-1]][0].append(tensor[:, :, height * (i+1) : ])
+        dic_single_datasets[worker_list[-1]][1].append(label)
+        dic_single_datasets[worker_list[-1]][2].append(idx)
+        
         idx += 1
-    #each value of the dictionary is a list of triples
+        
     return dic_single_datasets
 
 
-class BaseVerticalDataset(Dataset): 
-    def __init__(self, datalist):
-        self.dataset = datalist
-        self.get_data_tensor()
-        self.worker_id = None
-        self.data_pointer = None
-        self.label_pointer = None
-        self.index_pointer = None
+def split_data_create_vertical_dataset(dataset, worker_list): 
+    
+    dic_single_datasets = split_data(dataset, worker_list=worker_list)
+
+    #create base datasets 
+    base_datasets_list = []
+    for worker in worker_list: 
+        base_datasets_list.append(BaseVerticalDataset(dic_single_datasets[worker], worker_id=worker))
         
+    #create VerticalFederatedDataset
+    return VerticalFederatedDataset(base_datasets_list)
+
+class BaseVerticalDataset(Dataset): 
+    def __init__(self, datatuples, worker_id=None):
+        
+        self.fill_tensors(datatuples)
+            
+        self.worker_id = None
+        if worker_id != None: 
+            self.send_to_worker(worker_id)
+            self.worker_id = worker_id
+            
+        self.dataset_tolist()
+        
+            
     def __len__(self):
-        return len(self.dataset)
+        return self.data_tensor.shape[0]
         
     def __get_item__(self, idx):
-        return self.dataset[i]
+        return tuple([self.data_tensor[idx], self.label_tensor[idx], self.index_tensor[idx]])
         
-    def get_data_tensor(self):
-        self.data_tensor = []
-        self.label_tensor = []
-        self.index_tensor = []
-        for el in self.dataset: 
-            self.data_tensor.append(el[0])
-            self.label_tensor.append(el[1])
-            self.index_tensor.append(el[2])
-        self.data_tensor = torch.stack(self.data_tensor)
-        self.label_tensor = torch.Tensor(self.label_tensor)
-        self.index_tensor = torch.Tensor(self.index_tensor)
+    def __fill_tensors(self, data_tuples):
+        self.data_tensor = torch.stack(data_tuples[0])
+        self.label_tensor = torch.Tensor(data_tuples[1])
+        self.index_tensor = torch.Tensor(data_tuples[2])
+        
+    def __dataset_tolist(self):
+        flat_dataset = []
+        for i in range(0, self.__len__()):
+            flat_dataset.append(self.__get_item__(i))
+        self.dataset = flat_dataset
             
     def send_to_worker(self, worker):
         self.worker_id = worker

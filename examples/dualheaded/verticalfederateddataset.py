@@ -4,13 +4,13 @@ import torch
 from torch.utils.data import Dataset
 
 
-def split_data(n_workers)
+def split_data(n_workers, dataset)
     idx = 0
     dic_single_datasets = {}
     for i in range(0, n_workers): 
         dic_single_datasets[i] = []
 
-    for tensor, label in train_dataset: 
+    for tensor, label in dataset: 
         height = tensor.shape[-1]//n_workers
         data_parts_list = []
         #put in a list the parts to give to single workers

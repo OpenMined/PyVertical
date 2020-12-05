@@ -21,6 +21,8 @@ TODO:
     - create class for splitting the data 
     - create LabelSet and SampleSet (to accomodate later different roles of workers)
     - improve DataLoader to accomodate different sampler (e.g. random sampler when shuffle) and different batch size
+    - split function should be able to take as an input a dataloader, and not only a dataset (i.e. single sample iteration)
+    - check that / modify such that it works on data different than images
 """
 
 

@@ -75,7 +75,7 @@ def split_data(dataset, worker_list=None, n_workers=2, label_server=None):
             i += 1
             
         #add the value of the last worker / split
-        dic_single_datasets[worker_list[-1]][0].append(tensor[:, :, height * (i+1) : ])
+        dic_single_datasets[worker_list[-1]][0].append(tensor[:, :, height * (i) : ])
         dic_single_datasets[worker_list[-1]][1].append(label)
         dic_single_datasets[worker_list[-1]][2].append(idx)
         

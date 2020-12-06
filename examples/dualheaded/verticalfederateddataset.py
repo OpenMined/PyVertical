@@ -204,12 +204,6 @@ class VerticalFederatedDataset():
         Returns: list of workers
         """
         return list(self.datasets.keys())
-    
-    def get_dataset(self, worker):
-        self[worker].federated = False
-        dataset = self[worker].get()
-        del self.datasets[worker]
-        return dataset
 
     def __getitem__(self, worker_id):
         """
@@ -261,7 +255,5 @@ class VerticalFederatedDataLoader:
         return zip(*self.vf_dataset)
 
     def __len__(self):
-        l = 0
-        for x in self.vf_dataset.datasets.values():
-            l += len(x)
-        return l // len(self.workers)
+        return sum(len(x) for x in self.datasets.values()) // len(self.workers)
+

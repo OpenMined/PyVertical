@@ -27,7 +27,7 @@ Vertically-partitioned data could be applied to solve vital problems,
 but data holders can't combine their datasets
 by simply comparing notes with other data holders
 unless they want to break user privacy.
-`PyVertical` uses [PSI](https://www.github.com/OpenMined/PSI)
+`PyVertical` uses [PSI]
 to link datasets in a privacy-preserving way.
 We train SplitNNs on the partitioned data
 to ensure the data remains separate throughout the entire process.
@@ -58,8 +58,26 @@ PyVertical process:
     - Train the network
 
 ## Requirements
-This project is written in Python.
-The work is displayed in jupyter notebooks.
+
+### OS
+
+| Windows | Linux | MacOS |
+|:--:|:--:|:--:|
+| :x: | :heavy_check_mark: | :x: |
+
+The upstream [PSI] library
+currently only has wheels
+for Linux operating systems.
+
+### Python
+
+| `3.6` | `3.7` | `3.8` | `3.9` |
+| ------|-------|-------|-------|
+| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
+
+[syft] and [PSI]
+upstream dependencies do not have `Python 3.9`
+packages.
 
 ### Environment
 
@@ -78,15 +96,6 @@ N.b. Installing the dependencies takes several steps to circumvent versioning in
 `syft` and `jupyter`.
 In the future,
 all packages will be moved into the `environment.yml`.
-
-### PSI
-
-In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical,
-you need to install [bazel](https://www.bazel.build/) to build the necessary Python bindings for the C++ core.
-After you have installed bazel, run the build script with `.github/workflows/scripts/build-psi.sh`.
-
-This should generate a `_psi_bindings.so` file
-and place it in `src/psi/`.
 
 ### Docker
 
@@ -160,6 +169,7 @@ and [`black`][black] formatting.
 [black]: https://black.readthedocs.io/en/stable/
 [conda]: https://docs.conda.io/en/latest/
 [flake8]: https://flake8.pycqa.org/en/latest/index.html#quickstart
+[psi]: https://www.github.com/OpenMined/PSI
 [pytest]: https://docs.pytest.org/en/latest/contents.html
 [syft]: https://github.com/OpenMined/PySyft
 [synthea]: https://github.com/synthetichealth/synthea

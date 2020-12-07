@@ -7,7 +7,8 @@
 # PyVertical
 
 A project developing privacy-preserving,
-vertical federated learning.
+vertical federated learning,
+using [`syft`](syft).
 
 - :link: Private entity resolution
          using Private Set Intersection (PSI)
@@ -151,7 +152,7 @@ To run the tests manually:
 1. Run `python -m pytest`
 
 CI also checks the code conforms to [`flake8`][flake8] standards
-and [`black`][black] formatting
+and [`black`][black] formatting.
 
 ## License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
@@ -160,7 +161,7 @@ and [`black`][black] formatting
 [conda]: https://docs.conda.io/en/latest/
 [flake8]: https://flake8.pycqa.org/en/latest/index.html#quickstart
 [pytest]: https://docs.pytest.org/en/latest/contents.html
-
+[syft]: https://github.com/OpenMined/PySyft
 [synthea]: https://github.com/synthetichealth/synthea
 
 [ttitcombe]: https://github.com/ttitcombe

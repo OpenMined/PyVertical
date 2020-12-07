@@ -13,6 +13,7 @@
 
 - Moved dataset splitting helper functions to "utils" folder
 - Pinned `syft` version in requirements to `< 0.3.0`
+- Install `openmined_psi` pip package to get PSI code
 
 
 ## [0.1.0] - 2020-07-10

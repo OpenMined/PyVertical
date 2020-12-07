@@ -12,4 +12,5 @@ dependencies:
   - black  # for code formatting
   - pip >= 19
   - pip:
+      - openmined_psi
       - pytest

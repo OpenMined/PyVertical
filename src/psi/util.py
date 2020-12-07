@@ -1,6 +1,5 @@
 """This module contains utility functions that expose functionality of PSI."""
-
-from . import client, server
+from openmined_psi import client, server
 
 
 class Server:

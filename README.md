@@ -63,11 +63,10 @@ PyVertical process:
 
 | Windows | Linux | MacOS |
 |:--:|:--:|:--:|
-| :x: | :heavy_check_mark: | :x: |
+| :x: | :heavy_check_mark: | :heacy_check_mark: |
 
 The upstream [PSI] library
-currently only has wheels
-for Linux operating systems.
+does not have wheels for Windows.
 
 ### Python
 

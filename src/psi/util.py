@@ -67,4 +67,4 @@ class Client:
         Returns:
             The intersection set (List[str]) of client and server items
         """
-        return self._client.GetIntersection(setup, response)
+        return sorted(self._client.GetIntersection(setup, response))

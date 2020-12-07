@@ -11,10 +11,9 @@ from src.psi.util import Client, Server
 @pytest.mark.parametrize(
     "test_input,expected",
     [
-        pytest.param(
+        (
             ([str(i) for i in range(10)], [str(i * 2) for i in range(10)]),
             [0, 2, 4, 6, 8],
-            marks=pytest.mark.xfail(sys.version_info.minor == 8, reason="PSI bug")
         ),
         ((["0"], ["0"]), [0]),
         ((["1"], ["2"]), []),
@@ -34,7 +33,12 @@ def test_compute_intersection_returns_correct_indices(test_input, expected):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected", [((["1"], []), []), (([], ["1"]), []), (([], []), []),],
+    "test_input,expected",
+    [
+        ((["1"], []), []),
+        (([], ["1"]), []),
+        (([], []), []),
+    ],
 )
 def test_compute_intersection_returns_correct_indices_with_empty_items(
     test_input, expected

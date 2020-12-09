@@ -63,7 +63,10 @@ PyVertical process:
 
 | Windows | Linux | MacOS |
 |:--:|:--:|:--:|
-| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| :x: | :heavy_check_mark: | :heacy_check_mark: |
+
+The upstream [PSI] library
+does not have wheels for Windows.
 
 ### Python
 
@@ -72,7 +75,7 @@ PyVertical process:
 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
 
 [syft] and [PSI]
-dependencies do not have `Python 3.9`
+upstream dependencies do not have `Python 3.9`
 packages.
 
 ### Environment

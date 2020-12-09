@@ -1,6 +1,5 @@
 """This module contains utility functions that expose functionality of PSI."""
-
-from . import client, server
+from openmined_psi import client, server
 
 
 class Server:
@@ -68,4 +67,4 @@ class Client:
         Returns:
             The intersection set (List[str]) of client and server items
         """
-        return self._client.GetIntersection(setup, response)
+        return sorted(self._client.GetIntersection(setup, response))

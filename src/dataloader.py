@@ -1,13 +1,12 @@
 """
 Dataloaders for vertically partitioned data
 """
-from typing import List
-
 from typing import List, Tuple
 from uuid import UUID
 
 from torch.utils.data import DataLoader
 from torch.utils.data._utils.collate import default_collate
+
 from src.utils import partition_dataset
 
 

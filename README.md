@@ -63,7 +63,7 @@ PyVertical process:
 
 | Windows | Linux | MacOS |
 |:--:|:--:|:--:|
-| :x: | :heavy_check_mark: | :heacy_check_mark: |
+| :x: | :heavy_check_mark: | :heavy_check_mark: |
 
 The Windows `PyTorch version 1.4.0` is experiencing issues.
 It cannot be updated on a working version, until `Syft` will be updated, too.

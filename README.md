@@ -65,8 +65,8 @@ PyVertical process:
 |:--:|:--:|:--:|
 | :x: | :heavy_check_mark: | :heacy_check_mark: |
 
-The upstream [PSI] library
-does not have wheels for Windows.
+The Windows `PyTorch version 1.4.0` is experiencing issues.
+It cannot be updated on a working version, until `Syft` will be updated, too.
 
 ### Python
 

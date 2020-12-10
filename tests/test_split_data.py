@@ -1,17 +1,18 @@
 """
 Test code in src/dataset.py
 """
-import uuid
 from copy import deepcopy
 from shutil import rmtree
+import uuid
 
 import numpy as np
 import pytest
 import torch
-import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
+import torchvision.transforms as transforms
 
-from src.utils import add_ids, partition_dataset
+from src.utils import add_ids
+from src.utils import partition_dataset
 
 
 class TestPartition:

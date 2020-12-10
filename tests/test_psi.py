@@ -5,7 +5,8 @@ import sys
 
 import pytest
 
-from src.psi.util import Client, Server
+from src.psi.util import Client
+from src.psi.util import Server
 
 
 @pytest.mark.parametrize(

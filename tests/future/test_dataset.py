@@ -2,7 +2,8 @@ import pytest
 import syft as sy
 import torch as th
 
-from src.future import PartitionedDataset, VerticalDataset
+from src.future import PartitionedDataset
+from src.future import VerticalDataset
 
 hook = sy.TorchHook(th)
 

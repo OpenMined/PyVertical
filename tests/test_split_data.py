@@ -1,9 +1,9 @@
 """
 Test code in src/dataset.py
 """
+import uuid
 from copy import deepcopy
 from shutil import rmtree
-import uuid
 
 import numpy as np
 import pytest

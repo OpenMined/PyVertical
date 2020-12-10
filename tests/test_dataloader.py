@@ -2,6 +2,7 @@
 Test code in src/dataloader.py
 """
 import sys
+
 sys.path.append('../')
 from shutil import rmtree
 
@@ -10,9 +11,9 @@ import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
-from src.dataloader import VerticalDataLoader, SinglePartitionDataLoader
-from src.utils import add_ids, partition_dataset
+from src.dataloader import SinglePartitionDataLoader, VerticalDataLoader
 from src.psi.util import Client, Server
+from src.utils import add_ids, partition_dataset
 
 
 class TestSinglePartitionDataset:

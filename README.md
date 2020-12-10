@@ -155,7 +155,7 @@ For major changes,
 please open an issue first to discuss what you would like to change.
 
 Read the OpenMined
-[contributing guidelines](https://github.com/OpenMined/.github/blob/master/CONTRIBUTING.md)
+[contributing guidelines][contrib]
 and [styleguide](https://github.com/OpenMined/.github/blob/master/STYLEGUIDE.md)
 for more information.
 
@@ -170,14 +170,14 @@ To run the tests manually:
 1. In the command line, navigate to the root of this repository
 1. Run `python -m pytest`
 
-CI also checks the code conforms to [`flake8`][flake8] standards
-and [`black`][black] formatting.
+CI also checks the code is formatting according to [contributing guidelines][contrib].
 
 ## License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
 
 [black]: https://black.readthedocs.io/en/stable/
 [conda]: https://docs.conda.io/en/latest/
+[contrib]: https://github.com/OpenMined/.github/blob/master/CONTRIBUTING.md
 [flake8]: https://flake8.pycqa.org/en/latest/index.html#quickstart
 [psi]: https://www.github.com/OpenMined/PSI
 [pytest]: https://docs.pytest.org/en/latest/contents.html

@@ -1,2 +1,0 @@
-openmined.psi
-syft==0.2.*

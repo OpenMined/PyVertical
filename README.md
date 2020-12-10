@@ -63,7 +63,10 @@ PyVertical process:
 
 | Windows | Linux | MacOS |
 |:--:|:--:|:--:|
-| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| :x: | :heavy_check_mark: | :heacy_check_mark: |
+
+The upstream [PSI] library
+does not have wheels for Windows.
 
 ### Python
 
@@ -72,7 +75,7 @@ PyVertical process:
 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
 
 [syft] and [PSI]
-dependencies do not have `Python 3.9`
+upstream dependencies do not have `Python 3.9`
 packages.
 
 ### PyTorch Environment
@@ -85,7 +88,6 @@ we recommend using [Conda]:
     - This creates an environment `pyvertical-dev`
     - Comes with most dependencies you will need
 1. Activate the environment with `conda activate pyvertical-dev`
-1. Run `pip install syft==0.2.*`
 1. Run `conda install notebook`
 
 N.b. Installing the dependencies takes several steps to circumvent versioning incompatibility between

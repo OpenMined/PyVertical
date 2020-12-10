@@ -6,10 +6,12 @@ dependencies:
   - python=3.7.*
   - numpy >=1.16
   - pandas >= 1.0.0
-  - pytorch=1.4.0
+  - pytorch=1.6.0
   - torchvision
   - cpuonly  # remove if using GPU
   - black  # for code formatting
   - pip >= 19
   - pip:
+      - openmined.psi
       - pytest
+      - matplotlib

@@ -1,8 +1,10 @@
 name: pyvertical-dev-tf
 channels:
-  - tensorflow
+  - conda-forge
 dependencies:
   - python=3.8
   - numpy >=1.16
   - pandas >= 1.0.0
-  - tensorflow
+  - pip >= 19
+  - pip:
+      - tensorflow >= 2.0.0

@@ -1,18 +1,24 @@
 #!/bin/bash
-# Download Synthea Data in the correct directory PyVertical/data/synthea
-cd ../data/
-GITKEEP_exists=/synthea/.gitkeep
-if test -f "$GITKEEP_exists"; then
-    rm /synthea/.gitkeep
-fi
 
-git clone https://github.com/synthetichealth/synthea.git
+# # Download Synthea Data 
 
-cd synthea
+# ----------------------------------------------
+# If you choose to download Synthea on the PyVertical/data/synthea folder, execute:
+
+# cd ../data/
+# GITKEEP_exists=/synthea/.gitkeep
+# if test -f "$GITKEEP_exists"; then
+#     rm /synthea/.gitkeep
+# fi
+
+# git clone https://github.com/synthetichealth/synthea.git
+
+# ----------------------------------------------
+
 
 # Generate data
+cd 'PATH'/synthea # Change 'PATH' to the correct path on your system
 ./run_synthea -s 42 -p 5000 --exporter.csv.export true
-cd third-party/synthea
 
 
 # Copy data to PyVertical/data

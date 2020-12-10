@@ -155,8 +155,10 @@ images/*
 !images/diagram_white_background.png
 
 # Ignore data
+# data/synthea/*
+# !data/synthea/.gitkeep
+data/*
 data/synthea/*
-!data/synthea/.gitkeep
 
 examples/experimental/*
 !examples/experimental/*.ipynb

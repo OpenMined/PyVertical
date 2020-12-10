@@ -65,8 +65,8 @@ PyVertical process:
 |:--:|:--:|:--:|
 | :x: | :heavy_check_mark: | :heacy_check_mark: |
 
-The upstream [PSI] library
-does not have wheels for Windows.
+The Windows `PyTorch version 1.4.0` is experiencing issues.
+It cannot be updated on a working version, until `Syft` will be updated, too.
 
 ### Python
 
@@ -78,7 +78,7 @@ does not have wheels for Windows.
 upstream dependencies do not have `Python 3.9`
 packages.
 
-### Environment
+### PyTorch Environment
 
 To install the dependencies,
 we recommend using [Conda]:
@@ -88,13 +88,24 @@ we recommend using [Conda]:
     - This creates an environment `pyvertical-dev`
     - Comes with most dependencies you will need
 1. Activate the environment with `conda activate pyvertical-dev`
-1. Run `pip install syft==0.2.*`
 1. Run `conda install notebook`
 
 N.b. Installing the dependencies takes several steps to circumvent versioning incompatibility between
 `syft` and `jupyter`.
 In the future,
 all packages will be moved into the `environment.yml`.
+
+### Tensorflow Environment
+
+To install the dependencies,
+we recommend using [Conda]:
+1. Clone this repository
+1. In the command line, navigate to your local copy of the repository
+1. Run `conda env create -f tf_environment.yml`
+    - This creates an environment `pyvertical-dev-tf`
+    - Comes with most dependencies you will need
+1. Activate the environment with `conda activate pyvertical-dev-tf`
+1. Run `conda install notebook`
 
 ### Docker
 

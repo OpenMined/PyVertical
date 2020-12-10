@@ -14,3 +14,5 @@ dependencies:
   - pip:
       - openmined.psi
       - pytest
+      - matplotlib
+      - syft==0.2.*

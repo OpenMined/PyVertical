@@ -7,9 +7,9 @@ Worker 2 has a segment of the model and the Labels
 """
 
 
+import syft as sy
 import torch
 from torch import nn
-import syft as sy
 
 hook = sy.TorchHook(torch)
 

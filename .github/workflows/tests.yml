@@ -23,7 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt --no-cache-dir
           pip install -U pytest
-          pip install flake8 black mypy coverage
+          pip install flake8 black mypy coverage isort
       - name: Run tests
         timeout-minutes: 15
         run: python -m pytest tests/
@@ -35,6 +35,8 @@ jobs:
         run: black --check src
       - name: Check type hints
         run: mypy src --ignore-missing-imports
+      - name: Check import formatting
+        run: isort src/ -c -v
   OtherOS:
     runs-on: ${{ matrix.os }}
     strategy:

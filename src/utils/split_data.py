@@ -2,11 +2,13 @@
 Handling vertically partitioned data
 """
 from copy import deepcopy
-from typing import List, Tuple, TypeVar
+from typing import List
+from typing import Tuple
+from typing import TypeVar
 from uuid import uuid4
 
-import numpy as np
 from PIL import Image
+import numpy as np
 
 # Ignore errors when running mypy script
 # mypy: ignore-errors

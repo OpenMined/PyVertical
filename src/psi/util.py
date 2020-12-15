@@ -1,6 +1,6 @@
 """This module contains utility functions that expose functionality of PSI."""
-
-from . import client, server
+from openmined_psi import client
+from openmined_psi import server
 
 
 class Server:
@@ -26,11 +26,9 @@ class Server:
         """
         Return the setup and corresponding response for the client to compute
         the private set intersection.
-
         Args:
             request (_psi_bindings.PsiProtoRequest): The client request
             len_client_items (int): The length of the client items
-
         Returns:
             A tuple of (setup, response) with:
             setup (_psi_bindings.PsiProtoServerSetup): The server setup
@@ -67,8 +65,7 @@ class Client:
         Args:
             setup (_psi_bindings.PsiProtoServerSetup): The server setup
             response (_psi_bindings.PsiProtoResponse): The server response
-
         Returns:
             The intersection set (List[str]) of client and server items
         """
-        return self._client.GetIntersection(setup, response)
+        return sorted(self._client.GetIntersection(setup, response))

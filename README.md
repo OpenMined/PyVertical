@@ -7,7 +7,8 @@
 # PyVertical
 
 A project developing privacy-preserving,
-vertical federated learning.
+vertical federated learning,
+using [`syft`](syft).
 
 - :link: Private entity resolution
          using Private Set Intersection (PSI)
@@ -26,7 +27,7 @@ Vertically-partitioned data could be applied to solve vital problems,
 but data holders can't combine their datasets
 by simply comparing notes with other data holders
 unless they want to break user privacy.
-`PyVertical` uses [PSI](https://www.github.com/OpenMined/PSI)
+`PyVertical` uses [PSI]
 to link datasets in a privacy-preserving way.
 We train SplitNNs on the partitioned data
 to ensure the data remains separate throughout the entire process.
@@ -35,6 +36,7 @@ See the [changelog](./CHANGELOG.md)
 for information
 on the current status of `PyVertical`.
 
+**NOTE: PyVertical does not currently work with `syft 0.3.0`**
 
 ## The Process
 
@@ -56,10 +58,27 @@ PyVertical process:
     - Train the network
 
 ## Requirements
-This project is written in Python.
-The work is displayed in jupyter notebooks.
 
-### Environment
+### OS
+
+| Windows | Linux | MacOS |
+|:--:|:--:|:--:|
+| :x: | :heavy_check_mark: | :heavy_check_mark: |
+
+The Windows `PyTorch version 1.4.0` is experiencing issues.
+It cannot be updated on a working version, until `Syft` will be updated, too.
+
+### Python
+
+| `3.6` | `3.7` | `3.8` | `3.9` |
+| ------|-------|-------|-------|
+| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
+
+[syft] and [PSI]
+upstream dependencies do not have `Python 3.9`
+packages.
+
+### PyTorch Environment
 
 To install the dependencies,
 we recommend using [Conda]:
@@ -69,7 +88,6 @@ we recommend using [Conda]:
     - This creates an environment `pyvertical-dev`
     - Comes with most dependencies you will need
 1. Activate the environment with `conda activate pyvertical-dev`
-1. Run `pip install syft[udacity]`
 1. Run `conda install notebook`
 
 N.b. Installing the dependencies takes several steps to circumvent versioning incompatibility between
@@ -77,14 +95,17 @@ N.b. Installing the dependencies takes several steps to circumvent versioning in
 In the future,
 all packages will be moved into the `environment.yml`.
 
-### PSI
+### Tensorflow Environment
 
-In order to use [PSI](https://github.com/OpenMined/PSI) with PyVertical,
-you need to install [bazel](https://www.bazel.build/) to build the necessary Python bindings for the C++ core.
-After you have installed bazel, run the build script with `.github/workflows/scripts/build-psi.sh`.
-
-This should generate a `_psi_bindings.so` file
-and place it in `src/psi/`.
+To install the dependencies,
+we recommend using [Conda]:
+1. Clone this repository
+1. In the command line, navigate to your local copy of the repository
+1. Run `conda env create -f tf_environment.yml`
+    - This creates an environment `pyvertical-dev-tf`
+    - Comes with most dependencies you will need
+1. Activate the environment with `conda activate pyvertical-dev-tf`
+1. Run `conda install notebook`
 
 ### Docker
 
@@ -134,7 +155,7 @@ For major changes,
 please open an issue first to discuss what you would like to change.
 
 Read the OpenMined
-[contributing guidelines](https://github.com/OpenMined/.github/blob/master/CONTRIBUTING.md)
+[contributing guidelines][contrib]
 and [styleguide](https://github.com/OpenMined/.github/blob/master/STYLEGUIDE.md)
 for more information.
 
@@ -149,17 +170,18 @@ To run the tests manually:
 1. In the command line, navigate to the root of this repository
 1. Run `python -m pytest`
 
-CI also checks the code conforms to [`flake8`][flake8] standards
-and [`black`][black] formatting
+CI also checks the code is formatting according to [contributing guidelines][contrib].
 
 ## License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
 
 [black]: https://black.readthedocs.io/en/stable/
 [conda]: https://docs.conda.io/en/latest/
+[contrib]: https://github.com/OpenMined/.github/blob/master/CONTRIBUTING.md
 [flake8]: https://flake8.pycqa.org/en/latest/index.html#quickstart
+[psi]: https://www.github.com/OpenMined/PSI
 [pytest]: https://docs.pytest.org/en/latest/contents.html
-
+[syft]: https://github.com/OpenMined/PySyft
 [synthea]: https://github.com/synthetichealth/synthea
 
 [ttitcombe]: https://github.com/ttitcombe

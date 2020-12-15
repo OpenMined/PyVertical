@@ -23,18 +23,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt --no-cache-dir
           pip install -U pytest
-          pip install flake8 black mypy coverage
-      - name: Build bazel
-        run: .github/workflows/scripts/build_psi.sh
+          pip install flake8 black mypy coverage isort
       - name: Run tests
         timeout-minutes: 15
         run: python -m pytest tests/
-      - name: Python linters
+      - name: Run flake8 checks
         run: |
           flake8 --config=.flake8 .
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
-          black --check src
-          mypy src --ignore-missing-imports
+      - name: Check code formatting
+        run: black --check src
+      - name: Check type hints
+        run: mypy src --ignore-missing-imports
+      - name: Check import formatting
+        run: isort src/ -c -v
   OtherOS:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -51,8 +53,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -U pytest
-      - name: Build bazel
-        run: .github/workflows/scripts/build_psi.sh
       - name: Run tests
         timeout-minutes: 15
         run: python -m pytest tests/

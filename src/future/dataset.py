@@ -4,10 +4,9 @@ Build from syft FederatedDatasets
 """
 import logging
 
-import torch
 import syft as sy
 from syft.frameworks.torch import fl
-
+import torch
 
 logger = logging.getLogger(__name__)
 

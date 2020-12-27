@@ -107,13 +107,15 @@ def split_data_create_vertical_dataset(dataset, worker_list, label_server=None):
         a VerticalFederatedDataset.
     """    
 
-    #get a dictionary of workers --> list of triples (data, label, idx) representing the dataset.
-    dic_single_datasets = split_data(dataset, worker_list=worker_list)
-
-    #create base vertical datasets list, to be passed to a vertical federated dataset
+    #get a dictionary of workers --> data , label_list, index_list, ordered
+    dic_single_datasets, label_list, index_list = split_data(dataset, worker_list=worker_list)
+    
+    #instantiate BaseSets 
+    label_set = BaseSet(index_list, label_list, is_labels=True)
     base_datasets_list = []
-    for worker in worker_list: 
-        base_datasets_list.append(BaseVerticalDataset(dic_single_datasets[worker], worker_id=worker))
+    for w in dic_single_datasets.keys():
+        bs = BaseSet(index_list, dic_single_datasets[w], is_labels=False)
+        base_datasets_list.append(SampleSetWithLabels(label_set, bs, worker_id=w))
         
     #create VerticalFederatedDataset 
     return VerticalFederatedDataset(base_datasets_list)

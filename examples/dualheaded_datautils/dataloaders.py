@@ -20,7 +20,7 @@ class SinglePartitionDataLoader(DataLoader):
         
         #self.collate_fn = id_collate_fn
         
-class VerticalFederatedDataLoader:
+class VerticalFederatedDataLoader():
     """Dataloader which batches data from a complete
     set of vertically-partitioned datasets
     """
@@ -44,8 +44,8 @@ class VerticalFederatedDataLoader:
             self.batch_samplers[worker] = batch_sampler
             
         single_loaders = []
-        for k in vfd.datasets.keys(): 
-            single_loaders.append(SinglePartitionDataLoader(vfd.datasets[k], batch_sampler=self.batch_samplers[k]))
+        for k in vf_dataset.datasets.keys(): 
+            single_loaders.append(SinglePartitionDataLoader(vf_dataset.datasets[k], batch_sampler=self.batch_samplers[k]))
         
         self.single_loaders = single_loaders
             

@@ -58,8 +58,9 @@ class SampleSetWithLabels(Dataset):
         
         self.values_dic = {}
         for k in labelset.values_dic.keys():
-            self.values_dic[k] = tuple([sampleset.values_dic[k], torch.Tensor(labelset.values_dic[k])])
-            
+            self.values_dic[k] = tuple([sampleset.values_dic[k], labelset.values_dic[k]])
+                                       
+        print("ciao")
         self.worker_id = None 
         if worker_id != None: 
             self.send_to_worker(worker_id)
@@ -102,27 +103,41 @@ class VerticalFederatedDataset():
         
         self.datasets = {} #dictionary to keep track of BaseVerticalDatasets and corresponding workers
         
+        indices_list = set()
+        
+        #take intersecting items
         for dataset in datasets:
-            worker_id = dataset.worker_id
-            self.datasets[worker_id] = dataset
+            indices_list.update(dataset.ids)
+            self.datasets[dataset.worker_id] = dataset
             
         self.workers = self.__workers()
-    
+        
+        #create a list of dictionaries
+        self.dict_items_list = []
+          
+        for index in indices_list:
+            curr_dict = {}
+            for w in self.workers:
+                curr_dict[w] = tuple(list(self.datasets[w].values_dic[index.item()])+[index.item()])
+            
+            self.dict_items_list.append(curr_dict)
+                
+                
     def __workers(self):
         """
         Returns: list of workers
         """
         return list(self.datasets.keys())
 
-    def __getitem__(self, worker_id):
+    def __getitem__(self, idx):
         """
         Args:
             worker_id[str,int]: ID of respective worker
         Returns:
-            Get Datasets from the respective worker
+            Get dataset item from different workers
         """
 
-        return self.datasets[worker_id]
+        return self.dict_items_list[idx]
 
     def __len__(self):
 

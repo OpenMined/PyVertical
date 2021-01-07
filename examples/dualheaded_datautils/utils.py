@@ -24,13 +24,11 @@ Code built upon:
 - Syft 2.0 Federated Learning dataset and dataloader: https://github.com/OpenMined/PySyft/tree/syft_0.2.x/syft/frameworks/torch/fl
 TODO: 
     - replace ids with UUIDs
-    - there is a bug in creation of BaseDataset X
     - create class for splitting the data 
-    - create LabelSet and SampleSet (to accomodate later different roles of workers)
-    - improve DataLoader to accomodate different sampler (e.g. random sampler when shuffle) and different batch size X
-    - split function should be able to take as an input a dataloader, and not only a dataset (i.e. single sample iteration)
     - check that / modify such that it works on data different than images
     - dictionary keys should be worker ids, not workers themselves
+    
+    - the custom dataloder class is probably not needed anymore (Discuss)
 """
 
 

@@ -12,6 +12,9 @@ from torch.utils.data import SequentialSampler, RandomSampler, BatchSampler
 import datasets
 
 
+"""I think this is not needed anymore"""
+
+
 class SinglePartitionDataLoader(DataLoader):
     """DataLoader for a single vertically-partitioned dataset"""
 
@@ -20,22 +23,36 @@ class SinglePartitionDataLoader(DataLoader):
         
         #self.collate_fn = id_collate_fn
         
-class VerticalFederatedDataLoader():
+        
+
+class VerticalFederatedDataLoader(DataLoader):
     """Dataloader which batches data from a complete
     set of vertically-partitioned datasets
+    
+    
+    DataLoader(dataset, batch_size=1, shuffle=False, sampler=None,
+           batch_sampler=None, num_workers=0, collate_fn=None,
+           pin_memory=False, drop_last=False, timeout=0,
+           worker_init_fn=None, *, prefetch_factor=2,
+           persistent_workers=False)
     """
 
-    def __init__(self, vf_dataset, batch_size=8, shuffle=False, drop_last=False, *args, **kwargs):
+    def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None,
+           batch_sampler=None, num_workers=0, collate_fn=None,
+           pin_memory=False, drop_last=False, timeout=0,
+           worker_init_fn=None, *, prefetch_factor=2,
+           persistent_workers=False):
 
-        self.vf_dataset = vf_dataset
+        self.dataset = dataset
         self.batch_size = batch_size
         self.shuffle = shuffle
+        self.num_workers = num_workers
         
-        self.workers = vf_dataset.workers
+        self.workers = dataset.workers
         
         self.batch_samplers = {}
         for worker in self.workers:
-            data_range = range(len(list(self.vf_dataset.datasets.values())))
+            data_range = range(len(self.dataset))
             if shuffle:
                 sampler = RandomSampler(data_range)
             else:
@@ -44,14 +61,10 @@ class VerticalFederatedDataLoader():
             self.batch_samplers[worker] = batch_sampler
             
         single_loaders = []
-        for k in vf_dataset.datasets.keys(): 
-            single_loaders.append(SinglePartitionDataLoader(vf_dataset.datasets[k], batch_sampler=self.batch_samplers[k]))
+        for k in self.dataset.datasets.keys(): 
+            single_loaders.append(SinglePartitionDataLoader(self.dataset.datasets[k], batch_sampler=self.batch_samplers[k]))
         
         self.single_loaders = single_loaders
-            
-        
-    def __iter__(self):
-        return zip(*self.single_loaders)
 
     def __len__(self):
-        return sum(len(x) for x in self.vf_dataset.datasets.values()) // len(self.workers)
+        return sum(len(x) for x in self.dataset.datasets.values()) // len(self.workers)

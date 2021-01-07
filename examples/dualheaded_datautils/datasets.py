@@ -60,7 +60,6 @@ class SampleSetWithLabels(Dataset):
         for k in labelset.values_dic.keys():
             self.values_dic[k] = tuple([sampleset.values_dic[k], labelset.values_dic[k]])
                                        
-        print("ciao")
         self.worker_id = None 
         if worker_id != None: 
             self.send_to_worker(worker_id)
@@ -121,6 +120,8 @@ class VerticalFederatedDataset():
                 curr_dict[w] = tuple(list(self.datasets[w].values_dic[index.item()])+[index.item()])
             
             self.dict_items_list.append(curr_dict)
+            
+        self.indices = list(indices_list)
                 
                 
     def __workers(self):
@@ -140,8 +141,7 @@ class VerticalFederatedDataset():
         return self.dict_items_list[idx]
 
     def __len__(self):
-
-        return sum(len(dataset) for dataset in self.datasets.values())
+        return len(self.indices)
 
     def __repr__(self):
 

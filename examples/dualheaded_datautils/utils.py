@@ -67,7 +67,7 @@ def split_data(dataset, worker_list=None, n_workers=2):
         - label
         - index 
         """
-        dic_single_datasets[worker] = [] 
+        dic_single_datasets[worker.id] = [] 
 
     """
     Loop through the dataset to split the data and labels vertically across workers. 
@@ -80,11 +80,11 @@ def split_data(dataset, worker_list=None, n_workers=2):
         i = 0
         uuid_idx = uuid4()
         for worker in worker_list[:-1]: 
-            dic_single_datasets[worker].append(tensor[:, :, height * i : height * (i + 1)])
+            dic_single_datasets[worker.id].append(tensor[:, :, height * i : height * (i + 1)])
             i += 1
             
         #add the value of the last worker / split
-        dic_single_datasets[worker_list[-1]].append(tensor[:, :, height * (i) : ])
+        dic_single_datasets[worker_list[-1].id].append(tensor[:, :, height * (i) : ])
         label_list.append(label)
         index_list.append(idx)
         

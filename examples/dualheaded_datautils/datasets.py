@@ -21,7 +21,7 @@ class BaseSet(Dataset):
         self.values = torch.Tensor(values) if is_labels else torch.stack(values)
 
         self.worker_id = None 
-        if worker_id != None: 
+        if worker_id: 
             self.send_to_worker(worker_id)
         
     def send_to_worker(self, worker):

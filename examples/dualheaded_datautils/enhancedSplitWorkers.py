@@ -24,7 +24,7 @@ class EnhanchedWorker():
         self.dataset = dataset #It can also be None, and then it would be only computational
         self.model = model 
 
-        self.level = level if level >= 0 else 0 #it should start from zero, otherwise throw error #TODO: implement error throwing
+        self.level = max(level, 0) #it should start from zero, otherwise throw error #TODO: implement error throwing
 
 
 

@@ -52,7 +52,7 @@ def split_data(dataset, worker_list=None, n_workers=2):
         the third the index, which is to keep track of the same data point. 
     """    
         
-    if worker_list == None:
+    if worker_list is None:
         worker_list = list(range(0, n_workers))
             
     #counter to create the index of different data samples

@@ -172,6 +172,20 @@ To run the tests manually:
 
 CI also checks the code is formatting according to [contributing guidelines][contrib].
 
+## Publications
+This project introduced in the work of Angelou et al. (2020) ([link](https://arxiv.org/abs/2011.09350)).
+You can cite this work using:
+
+@misc{angelou2020asymmetric,
+      title={Asymmetric Private Set Intersection with Applications to Contact Tracing and Private Vertical Federated Machine Learning}, 
+      author={Nick Angelou and Ayoub Benaissa and Bogdan Cebere and William Clark and Adam James Hall and Michael A. Hoeh and Daniel Liu and Pavlos Papadopoulos and Robin Roehm and Robert Sandmann and Phillipp Schoppmann and Tom Titcombe},
+      year={2020},
+      eprint={2011.09350},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR}
+}
+
+
 ## License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
 

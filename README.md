@@ -173,16 +173,24 @@ To run the tests manually:
 CI also checks the code is formatting according to [contributing guidelines][contrib].
 
 ## Publications
-This project introduced in the work of Angelou et al. (2020) ([link](https://arxiv.org/abs/2011.09350)).
+Romanini, D., Hall, A. J., Papadopoulos, P., Titcombe, T., Ismail, A., Cebere, T., Sandmann, R., Roehm, R. & Hoeh, M. A. (2021). PyVertical: A Vertical Federated Learning Framework for Multi-headed SplitNN. arXiv preprint arXiv:2104.00489. ([link](https://arxiv.org/abs/2104.00489))
+
+Angelou, N., Benaissa, A., Cebere, B., Clark, W., Hall, A. J., Hoeh, M. A., Liu, D., Papadopoulos, P., Roehm, R., Sandmann, R., Schoppmann, P. & Titcombe, T. (2020). Asymmetric Private Set Intersection with Applications to Contact Tracing and Private Vertical Federated Machine Learning. arXiv preprint arXiv:2011.09350. ([link](https://arxiv.org/abs/2011.09350))
+
 You can cite this work using:
 
-    @misc{angelou2020asymmetric,
-        title={Asymmetric Private Set Intersection with Applications to Contact Tracing and Private Vertical Federated Machine Learning}, 
-        author={Nick Angelou and Ayoub Benaissa and Bogdan Cebere and William Clark and Adam James Hall and Michael A. Hoeh and Daniel Liu and Pavlos Papadopoulos and Robin Roehm and Robert Sandmann and Phillipp Schoppmann and Tom Titcombe},
-        year={2020},
-        eprint={2011.09350},
-        archivePrefix={arXiv},
-        primaryClass={cs.CR}
+    @article{romanini2021pyvertical,
+        title={PyVertical: A Vertical Federated Learning Framework for Multi-headed SplitNN},
+        author={Romanini, Daniele and Hall, Adam James and Papadopoulos, Pavlos and Titcombe, Tom and Ismail, Abbas and Cebere, Tudor and Sandmann, Robert and Roehm, Robin and Hoeh, Michael A},
+        journal={arXiv preprint arXiv:2104.00489},
+        year={2021}
+    }
+
+    @article{angelou2020asymmetric,
+        title={Asymmetric Private Set Intersection with Applications to Contact Tracing and Private Vertical Federated Machine Learning},
+        author={Angelou, Nick and Benaissa, Ayoub and Cebere, Bogdan and Clark, William and Hall, Adam James and Hoeh, Michael A and Liu, Daniel and Papadopoulos, Pavlos and Roehm, Robin and Sandmann, Robert and others},
+        journal={arXiv preprint arXiv:2011.09350},
+        year={2020}
     }
 
 

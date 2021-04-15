@@ -166,3 +166,4 @@ and [`black`][black] formatting
 [pavlos-p]: https://github.com/pavlos-p
 [h4ll]: https://github.com/h4ll
 [rsandmann]: https://github.com/rsandmann
+[daler3]: https://github.com/daler3

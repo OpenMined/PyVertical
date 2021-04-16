@@ -160,9 +160,9 @@ and [styleguide](https://github.com/OpenMined/.github/blob/master/STYLEGUIDE.md)
 for more information.
 
 ## Contributors
-|  [![TTitcombe](https://github.com/TTitcombe.png?size=150)][ttitcombe] | [![Pavlos-P](https://github.com/pavlos-p.png?size=150)][pavlos-p]  | [![H4ll](https://github.com/h4ll.png?size=150)][h4ll] | [![rsandmann](https://github.com/rsandmann.png?size=150)][rsandmann]
-| :--:|:--: |:--:|:--:|
-|  [TTitcombe] | [Pavlos-p]  | [H4LL] | [rsandmann]
+|  [![TTitcombe](https://github.com/TTitcombe.png?size=150)][ttitcombe] | [![Pavlos-P](https://github.com/pavlos-p.png?size=150)][pavlos-p]  | [![H4ll](https://github.com/h4ll.png?size=150)][h4ll] | [![rsandmann](https://github.com/rsandmann.png?size=150)][rsandmann] | [![daler3](https://github.com/daler3.png?size=150)][daler3]
+| :--:|:--: |:--:|:--:|:--:|
+|  [TTitcombe] | [Pavlos-p]  | [H4LL] | [rsandmann] | [daler3] 
 
 ## Testing
 We use [`pytest`][pytest] to test the source code.
@@ -210,3 +210,4 @@ You can cite this work using:
 [pavlos-p]: https://github.com/pavlos-p
 [h4ll]: https://github.com/h4ll
 [rsandmann]: https://github.com/rsandmann
+[daler3]: https://github.com/daler3

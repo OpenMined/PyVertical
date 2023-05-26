@@ -1,2 +1,4 @@
 openmined.psi
 syft==0.2.*
+protobuf==3.20.*
+matplotlib

@@ -88,8 +88,9 @@ def partition_dataset(
     dataset: Dataset,
     keep_order: bool = False,
     remove_data: bool = True,
+    n_of_partition: int = 1
 ) -> Tuple[Dataset, Dataset]:
-    """Vertically partition a torch dataset in two
+    """Vertically partition a torch dataset in N (default=2)
 
     A vertical partition is when parameters for a single data point is
     split across multiple data holders.
@@ -113,30 +114,36 @@ def partition_dataset(
     if not hasattr(dataset, "ids"):
         raise RuntimeError("Dataset does not have attribute 'ids'")
 
-    partition1 = deepcopy(dataset)
-    partition2 = deepcopy(dataset)
+    label_partition = deepcopy(dataset)
+    data_partitions = []
+    for i in range(n_of_partition):
+        data_partitions.append(deepcopy(dataset))
 
     # Partition data
-    partition1.targets = None
-    partition2.data = None
+    label_partition.data = None
+    for dp in data_partitions:
+        dp.targets = None
 
     # Re-index data
-    idxs1 = np.arange(len(partition1))
-    idxs2 = np.arange(len(partition2))
+    idxlbl = np.arange(len(label_partition))
+    idxdt = [np.arange(len(dp)) for dp in data_partitions]
 
     # Remove random subsets of data with 1% prob
     if remove_data:
-        idxs1 = np.random.uniform(0, 1, len(partition1)) > 0.01
-        idxs2 = np.random.uniform(0, 1, len(partition2)) > 0.01
+        idxlbl = np.random.uniform(0, 1, len(idxlbl)) > 0.01
+        for i in range(len(idxdt)):
+            idxdt[i] = np.random.uniform(0, 1, len(data_partitions[i])) > 0.01
 
     if not keep_order:
-        np.random.shuffle(idxs1)
-        np.random.shuffle(idxs2)
+        np.random.shuffle(idxdt)
+        for idx in idxdt:
+            np.random.shuffle(idx)
 
-    partition1.data = partition1.data[idxs1]
-    partition1.ids = partition1.ids[idxs1]
+    label_partition.targets = label_partition.targets[idxlbl]
+    label_partition.ids = label_partition.ids[idxlbl]
 
-    partition2.targets = partition2.targets[idxs2]
-    partition2.ids = partition2.ids[idxs2]
+    for i in range(len(data_partitions)):
+        data_partitions[i].data = data_partitions[i].data[idxdt[i]]
+        data_partitions[i].ids = data_partitions[i].ids[idxdt[i]]
 
-    return partition1, partition2
+    return label_partition, data_partitions

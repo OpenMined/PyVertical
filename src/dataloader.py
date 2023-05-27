@@ -55,39 +55,42 @@ class VerticalDataLoader:
     def __init__(self, dataset, *args, **kwargs):
 
         # Split datasets
-        self.data_partition1, self.data_partition2 = partition_dataset(
+        self.label_partition, self.data_partitions = partition_dataset(
             dataset, remove_data=False, keep_order=False
         )
 
-        assert self.data_partition1.targets is None
-        assert self.data_partition2.data is None
+        assert self.label_partition.data is None
+        for dp in self.data_partitions:
+            assert dp.targets is None
 
-        self.dataloader1 = SinglePartitionDataLoader(
-            self.data_partition1, *args, **kwargs
+        self.label_dataloader = SinglePartitionDataLoader(
+            self.label_partition, *args, **kwargs
         )
-        self.dataloader2 = SinglePartitionDataLoader(
-            self.data_partition2, *args, **kwargs
-        )
+        self.dataloaders = []
+        for dp in self.data_partitions:
+            self.dataloaders.append( SinglePartitionDataLoader(
+                dp, *args, **kwargs
+            ))
 
     def __iter__(self):
-        return zip(self.dataloader1, self.dataloader2)
+        return zip(self.label_dataloader, [[dl[i] for dl in self.dataloaders] for i in range(len(self.dataloaders[0])) ])
 
     def __len__(self):
-        return (len(self.dataloader1) + len(self.dataloader2)) // 2
+        return (len(self.label_dataloader) + sum([len(self.dataloaders[i]) for i in range(len(self.dataloaders))])) // (1 + len(self.dataloaders))
 
     def drop_non_intersecting(self, intersection: List[int]):
         """Remove elements and ids in the datasets that are not in the intersection."""
-        self.dataloader1.dataset.data = self.dataloader1.dataset.data[intersection]
-        self.dataloader1.dataset.ids = self.dataloader1.dataset.ids[intersection]
+        self.label_dataloader.dataset.targets = self.label_dataloader.dataset.targets[intersection]
+        self.label_dataloader.dataset.ids = self.label_dataloader.dataset.ids[intersection]
 
-        self.dataloader2.dataset.targets = self.dataloader2.dataset.targets[
-            intersection
-        ]
-        self.dataloader2.dataset.ids = self.dataloader2.dataset.ids[intersection]
+        for dl in self.dataloaders:
+            dl.dataset.data = dl.dataset.data[intersection]
+            dl.dataset.ids = dl.dataset.ids[intersection]
 
     def sort_by_ids(self) -> None:
         """
         Sort each dataset by ids
         """
-        self.dataloader1.dataset.sort_by_ids()
-        self.dataloader2.dataset.sort_by_ids()
+        self.label_dataloader.dataset.sort_by_ids()
+        for dl in self.dataloaders:
+            dl.dataset.sort_by_ids()

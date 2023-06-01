@@ -73,7 +73,6 @@ class VerticalDataLoader:
             ))
 
     def __iter__(self):
-        # return zip(self.label_dataloader, [[dl[i] for dl in self.dataloaders] for i in range(len(self.dataloaders[0])) ])
         return zip(self.label_dataloader, *self.dataloaders)
 
     def __len__(self):
